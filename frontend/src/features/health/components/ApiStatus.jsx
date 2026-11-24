@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { CircleCheck, CircleX, LoaderCircle } from 'lucide-react'
+import { CircleAlert, CircleCheck, CircleX, LoaderCircle } from 'lucide-react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Button } from '@/components/ui/button'
 import { fetchHealth, selectHealth } from '../healthSlice'
@@ -28,10 +28,16 @@ export function ApiStatus() {
             <p>Checking the API…</p>
           </>
         )}
-        {status === 'succeeded' && (
+        {status === 'succeeded' && data.database === 'up' && (
           <>
             <CircleCheck className="size-5 text-green-700" aria-hidden="true" />
-            <p>Connected. Running for {data.uptimeSeconds} seconds.</p>
+            <p>API and database connected.</p>
+          </>
+        )}
+        {status === 'succeeded' && data.database !== 'up' && (
+          <>
+            <CircleAlert className="size-5 text-amber-700" aria-hidden="true" />
+            <p>API connected, but the database is not responding.</p>
           </>
         )}
         {status === 'failed' && (

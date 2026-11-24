@@ -5,10 +5,12 @@ import { AllExceptionsFilter } from './common/filters/all-exceptions.filter.js';
 import { ResponseInterceptor } from './common/interceptors/response.interceptor.js';
 import { validateEnv } from './config/env.validation.js';
 import { HealthModule } from './modules/health/health.module.js';
+import { SupabaseModule } from './supabase/supabase.module.js';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true, validate: validateEnv }),
+    SupabaseModule,
     HealthModule,
   ],
   // These apply to every route in the application.

@@ -1,8 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 export class HealthResponseDto {
-  @ApiProperty({ example: 'ok' })
-  status: string;
+  @ApiProperty({
+    enum: ['ok', 'degraded'],
+    description: 'degraded: the API runs but the database does not respond',
+  })
+  status: 'ok' | 'degraded';
+
+  @ApiProperty({ enum: ['up', 'down'] })
+  database: 'up' | 'down';
 
   @ApiProperty({ example: 42, description: 'Seconds since the server started' })
   uptimeSeconds: number;

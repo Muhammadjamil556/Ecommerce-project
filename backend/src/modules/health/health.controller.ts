@@ -10,9 +10,9 @@ export class HealthController {
   constructor(private readonly healthService: HealthService) {}
 
   @Get()
-  @ApiOperation({ summary: 'Check that the API is running' })
+  @ApiOperation({ summary: 'Check that the API and database are running' })
   @ApiDataResponse(HealthResponseDto)
-  getHealth(): HealthResponseDto {
+  getHealth(): Promise<HealthResponseDto> {
     return this.healthService.getHealth();
   }
 }

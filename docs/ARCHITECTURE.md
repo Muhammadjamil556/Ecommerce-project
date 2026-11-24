@@ -52,13 +52,33 @@ Error:
 
 A 5xx response always carries a generic message. The real cause is written to the server log only.
 
+## Database access
+
+`SupabaseService` is the only place that creates Supabase clients.
+
+| Method | Key | Row Level Security | Use for |
+| --- | --- | --- | --- |
+| `forUser(token)` | Publishable key and the user's token | Applies | Almost everything |
+| `asSystem()` | Secret key | Bypassed | Admin and system work, after checking permissions in code |
+
+Two database rules must both allow an operation: a **grant** decides whether a role may use a table or column at all, and a **policy** decides which rows.
+
+| Table | Not logged in | Logged-in user | Backend system client |
+| --- | --- | --- | --- |
+| `profiles` | Nothing | Read own row; edit own name and phone | Everything |
+| `user_roles` | Nothing | Read own role | Everything |
+
+A trigger on `auth.users` creates both rows at sign-up. The role is always `customer`, whatever the sign-up request contains.
+
 ## Backend layers
 
 | Folder | Purpose |
 | --- | --- |
 | `src/config/` | Environment validation, shared app settings, Swagger |
 | `src/common/` | Code used by every feature: error filter, response interceptor, decorators |
+| `src/supabase/` | Supabase clients |
 | `src/modules/` | One folder per feature |
+| `supabase/migrations/` | Database changes as SQL files |
 
 The server refuses to start if an environment variable is missing or invalid. Swagger is disabled when `NODE_ENV=production`.
 
@@ -80,6 +100,7 @@ The server refuses to start if an environment variable is missing or invalid. Sw
 | --- | --- |
 | Backend units | Vitest, `*.spec.ts` beside the code |
 | Backend HTTP behaviour | Vitest and Supertest, `test/*.e2e-spec.ts` |
+| Database security | Vitest against the real development project, `test/database.db-spec.ts` |
 | Frontend logic | Vitest, `*.test.js` beside the code |
 
 There are no automated frontend component tests yet. Screens are checked by hand in a browser.

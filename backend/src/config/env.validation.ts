@@ -1,9 +1,21 @@
 import { Transform, plainToInstance } from 'class-transformer';
-import { IsIn, IsInt, IsUrl, Max, Min, validateSync } from 'class-validator';
+import {
+  IsIn,
+  IsInt,
+  IsUrl,
+  Matches,
+  Max,
+  Min,
+  validateSync,
+} from 'class-validator';
+
+// Rejects the placeholders from .env.example, and catches the two keys being swapped.
+const PUBLISHABLE_KEY = /^sb_publishable_(?!replace_me)\S+$/;
+const SECRET_KEY = /^sb_secret_(?!replace_me)\S+$/;
 
 const ENVIRONMENTS = ['development', 'test', 'production'] as const;
 
-/** Browsers send an origin without a trailing slash, so CORS needs the same form. */
+/** Keeps only "https://host:port", removing a trailing slash or path. */
 function toOrigin(value: unknown): unknown {
   return typeof value === 'string' && URL.canParse(value)
     ? new URL(value).origin
@@ -27,6 +39,20 @@ export class EnvironmentVariables {
     protocols: ['http', 'https'],
   })
   FRONTEND_URL: string;
+
+  @Transform(({ value }) => toOrigin(value))
+  @IsUrl({ require_protocol: true, protocols: ['https'] })
+  SUPABASE_URL: string;
+
+  @Matches(PUBLISHABLE_KEY, {
+    message: 'SUPABASE_PUBLISHABLE_KEY must be your sb_publishable_... key',
+  })
+  SUPABASE_PUBLISHABLE_KEY: string;
+
+  @Matches(SECRET_KEY, {
+    message: 'SUPABASE_SECRET_KEY must be your sb_secret_... key',
+  })
+  SUPABASE_SECRET_KEY: string;
 }
 
 /** Stops the server from starting when an environment variable is missing or wrong. */

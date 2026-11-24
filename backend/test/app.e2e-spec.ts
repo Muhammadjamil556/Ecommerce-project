@@ -12,6 +12,7 @@ import request from 'supertest';
 import type { App } from 'supertest/types.js';
 import { AppModule } from '../src/app.module.js';
 import { configureApp } from '../src/config/configure-app.js';
+import { SupabaseService } from '../src/supabase/supabase.service.js';
 
 class ExampleDto {
   @IsString()
@@ -32,6 +33,14 @@ class TestOnlyController {
   }
 }
 
+// Replaces the real database. test/database.db-spec.ts covers the real one.
+const query = {
+  select: () => query,
+  limit: () => query,
+  abortSignal: () => Promise.resolve({ error: null }),
+};
+const fakeSupabase = { asSystem: () => ({ from: () => query }) };
+
 @Module({ imports: [AppModule], controllers: [TestOnlyController] })
 class TestAppModule {}
 
@@ -42,9 +51,10 @@ describe('Application (e2e)', () => {
     const moduleRef = await Test.createTestingModule({
       imports: [TestAppModule],
     })
-      .setLogger(false)
+      .overrideProvider(SupabaseService)
+      .useValue(fakeSupabase)
       .compile();
-    app = moduleRef.createNestApplication();
+    app = moduleRef.createNestApplication({ logger: false });
     configureApp(app);
     await app.init();
   });
@@ -61,6 +71,7 @@ describe('Application (e2e)', () => {
     expect(response.body).toEqual({
       data: {
         status: 'ok',
+        database: 'up',
         uptimeSeconds: expect.any(Number),
         timestamp: expect.any(String),
       },

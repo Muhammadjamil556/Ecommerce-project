@@ -39,7 +39,7 @@ Version notes (checked 2026-11-24; re-check when installing):
 6. Run relevant tests and builds after implementing. Fix errors introduced by the change.
 7. Never claim a feature is complete unless it is implemented and tested. Report failures honestly.
 8. Update `docs/ROADMAP.md` when work is completed, and keep other docs accurate.
-9. Do not commit or push unless the owner asks.
+9. Do not commit or push unless the owner asks. The GitHub repository is **public**: check for secrets and personal details first, and use the account's GitHub no-reply address as the commit email.
 
 ## Mentoring rules
 
@@ -79,7 +79,8 @@ Approved 2026-11-24 (reasons in `docs/ARCHITECTURE.md`):
 ## Security rules
 
 - Anyone can read the publishable key from the browser and call Supabase directly, skipping NestJS. Write every grant and RLS policy with that in mind.
-- Enable RLS on every table in the migration that creates it.
+- Enable RLS on every table in the migration that creates it, and cover new tables in `backend/test/database.db-spec.ts`.
+- Put trigger and `security definer` functions in the `private` schema with `set search_path = ''`.
 - Supabase no longer exposes new tables automatically. Each migration states its own `GRANT`s, including those needed by `service_role`, and grants no more than necessary.
 - Browser roles (`anon`, `authenticated`) get no write access to orders, payments, inventory, coupons, roles or prices.
 - Revoke `EXECUTE` from `public`, `anon` and `authenticated` on server-only Postgres functions.
@@ -99,6 +100,7 @@ Approved 2026-11-24 (reasons in `docs/ARCHITECTURE.md`):
 - Error: `{ "error": { "code": "...", "message": "...", "details": [] } }` with the correct HTTP status.
 - Throw Nest HTTP exceptions and format them in a global filter. Never leak raw database errors.
 - Check the `error` value of every Supabase call.
+- Get clients only from `SupabaseService`: `forUser(token)` by default, `asSystem()` only for admin and system work.
 
 ## Frontend conventions
 
@@ -142,8 +144,12 @@ Run inside `backend/` or `frontend/`. Run all checks for an app after changing i
 | Build | `npm run build` | `npm run build` |
 | Lint | `npm run lint` | `npm run lint` |
 | Unit tests | `npm test` | `npm test` |
+| Type check | `npm run typecheck` | not applicable |
 | End-to-end tests | `npm run test:e2e` | none yet |
+| Database security tests (real development project) | `npm run test:db` | not applicable |
 | Format | `npm run format` | `npm run format` |
 | Check formatting | `npm run format:check` | `npm run format:check` |
+
+New migration: `npx supabase migration new <name>` inside `backend/`. Preview with `npx supabase db push --remote --dry-run`; apply with `npx supabase db push --remote` only after the owner agrees.
 
 Add a Shadcn component: `npx shadcn@latest add <name>` inside `frontend/`.

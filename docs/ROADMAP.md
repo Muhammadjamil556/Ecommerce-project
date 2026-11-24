@@ -1,6 +1,6 @@
 # Development Roadmap
 
-**Current phase:** Phase 1, foundation. Code is complete, tested and committed; the GitHub repository is pending.
+**Current phase:** Phase 2 is complete and tested against the hosted Supabase project. Waiting for approval to start Phase 3.
 
 Status: `[ ]` not started, `[~]` in progress, `[x]` implemented and tested.
 
@@ -11,8 +11,8 @@ Each phase ends with a demo, test steps and an explanation. The next phase start
 | Phase | Name | What works at the end | Status |
 | --- | --- | --- | --- |
 | 0 | Planning | Documents and agreed architecture | `[x]` |
-| 1 | Foundation | React page shows a live response from NestJS | `[~]` |
-| 2 | Supabase connection | NestJS reads from the database; migrations work | `[ ]` |
+| 1 | Foundation | React page shows a live response from NestJS | `[x]` |
+| 2 | Supabase connection | NestJS reads from the database; migrations work | `[x]` |
 | 3 | Authentication and roles | Register, log in, protected and admin-only routes | `[ ]` |
 | 4 | Catalog API | Categories, products and variants through Swagger | `[ ]` |
 | 5 | Admin catalog | Admin manages products, images and stock | `[ ]` |
@@ -60,7 +60,7 @@ D1 to D5 were approved on 2026-11-24. See [ARCHITECTURE.md](ARCHITECTURE.md).
 
 - [x] Initialise Git and `.gitignore`
 - [x] First commit
-- [ ] Push to a private GitHub repository
+- [x] Push to GitHub (public repository, owner's choice)
 - [x] Record approved decisions in `docs/ARCHITECTURE.md`
 - [x] Create `backend/` with NestJS: validated config, Swagger, global validation, response format, error filter, CORS
 - [x] Create `frontend/` with Vite and React (JavaScript): Tailwind, Shadcn UI, React Router, Redux store, Axios client
@@ -74,11 +74,14 @@ D1 to D5 were approved on 2026-11-24. See [ARCHITECTURE.md](ARCHITECTURE.md).
 
 **Learn:** relational databases, migrations, grants, RLS.
 
-- [ ] Create the Supabase project (owner) and set environment variables
-- [ ] Add the Supabase CLI to `backend/` and link the project
-- [ ] First migration: `profiles`, `user_roles`, RLS, grants, profile creation on sign-up
-- [ ] NestJS Supabase module with user-scoped and secret-key clients
-- [ ] Health check includes the database
+- [x] Create the Supabase project (owner)
+- [x] Set environment variables (owner)
+- [x] Add the Supabase CLI to `backend/`
+- [x] Link the project (owner)
+- [x] First migration: `profiles`, `user_roles`, RLS, grants, profile creation on sign-up
+- [x] NestJS Supabase module with user-scoped and secret-key clients
+- [x] Health check includes the database
+- [x] Database security tests, `npm run test:db`
 
 **Test:** migration applies cleanly; a user cannot read another profile or change their own role, even when calling Supabase directly.
 

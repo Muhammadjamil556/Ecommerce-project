@@ -102,6 +102,15 @@ Backend:
 cd backend
 npm install
 cp .env.example .env
+```
+
+Fill in the three Supabase values in `backend/.env`. They are in the Supabase dashboard under Project Settings. Then connect to the project and apply the database migrations:
+
+```bash
+npx supabase login
+npx supabase link
+npx supabase db push --remote --dry-run
+npx supabase db push --remote
 npm run start:dev
 ```
 
@@ -117,7 +126,7 @@ npm run dev
 | Address | What it is |
 | --- | --- |
 | http://localhost:5173 | Website |
-| http://localhost:3000/api/v1/health | API health check |
+| http://localhost:3000/api/v1/health | API and database health check |
 | http://localhost:3000/api/docs | Swagger documentation |
 
 Press `Ctrl+C` in a terminal to stop that app. Restart an app after changing its `.env` file.
@@ -146,7 +155,11 @@ npm test
 npm run build
 ```
 
-The backend also has `npm run test:e2e`.
+The backend also has:
+
+- `npm run typecheck`: TypeScript check, including test files
+- `npm run test:e2e`: HTTP tests with a fake database
+- `npm run test:db`: security tests against the real development project. Creates temporary users and deletes them afterwards. Never point it at production
 
 ## Common problems
 
@@ -156,6 +169,9 @@ The backend also has `npm run test:e2e`.
 | Browser console shows a CORS error | `FRONTEND_URL` in `backend/.env` does not match the website address. `localhost` and `127.0.0.1` count as different |
 | `EADDRINUSE` or "Port 5173 is already in use" | The app is already running in another terminal |
 | "Invalid environment variables" | `.env` is missing or has a wrong value. Compare it with `.env.example` |
+| "API connected, but the database is not responding" | Migration not applied, wrong key, or the Supabase project is paused. The backend terminal shows the reason |
+| "permission denied for table" | A migration is missing a `GRANT` for that role |
+| A query returns no rows and no error | Row Level Security is hiding them |
 | Backend cannot find a module you just created | Relative imports must end in `.js`, even for `.ts` files |
 
 ## Documentation

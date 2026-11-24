@@ -1,6 +1,6 @@
 # Development Roadmap
 
-**Current phase:** Phase 2 is complete and tested against the hosted Supabase project. Waiting for approval to start Phase 3.
+**Current phase:** Phase 3, authentication and roles. Built and tested; waiting for one real password reset email. Registration emails and the first admin are done.
 
 Status: `[ ]` not started, `[~]` in progress, `[x]` implemented and tested.
 
@@ -13,7 +13,7 @@ Each phase ends with a demo, test steps and an explanation. The next phase start
 | 0 | Planning | Documents and agreed architecture | `[x]` |
 | 1 | Foundation | React page shows a live response from NestJS | `[x]` |
 | 2 | Supabase connection | NestJS reads from the database; migrations work | `[x]` |
-| 3 | Authentication and roles | Register, log in, protected and admin-only routes | `[ ]` |
+| 3 | Authentication and roles | Register, log in, protected and admin-only routes | `[~]` |
 | 4 | Catalog API | Categories, products and variants through Swagger | `[ ]` |
 | 5 | Admin catalog | Admin manages products, images and stock | `[ ]` |
 | 6 | Storefront | Customers browse, search and filter real products | `[ ]` |
@@ -32,13 +32,12 @@ The admin catalog comes before the storefront so the storefront shows real produ
 
 ## Open decisions
 
-D1 to D5 were approved on 2026-11-24. See [ARCHITECTURE.md](ARCHITECTURE.md).
+D1 to D10 were approved on 2026-11-24. See [ARCHITECTURE.md](ARCHITECTURE.md).
 
 ### Needed later
 
 | Before phase | Question |
 | --- | --- |
-| 4 | Store currency, and what kind of products the store sells |
 | 8 | Can visitors keep a cart before logging in? |
 | 9 | Is guest checkout allowed? How are tax and shipping fees calculated? |
 | 13 | Payment provider (depends on the owner's country) |
@@ -89,11 +88,16 @@ D1 to D5 were approved on 2026-11-24. See [ARCHITECTURE.md](ARCHITECTURE.md).
 
 **Learn:** JWTs, authentication and authorization, guards.
 
-- [ ] Register, log in, log out, forgot and reset password
-- [ ] Auth state in Redux; Axios attaches the access token
-- [ ] NestJS auth guard, roles guard and `@CurrentUser()`
-- [ ] `GET /api/v1/users/me`
-- [ ] Protected and admin routes in React; documented way to create the first admin
+- [x] Log in, log out and reset password
+- [x] Register, including a real confirmation email
+- [~] Forgot password (tested without sending email; the real test hit Supabase's limit of 2 emails per hour)
+- [x] Auth state in Redux; Axios attaches the access token
+- [x] NestJS auth guard, roles guard and `@CurrentUser()`
+- [x] `GET /api/v1/users/me`
+- [x] Protected and admin routes in React
+- [x] Documented way to create the first admin (README)
+- [x] Create the first admin
+- [x] Set the Supabase Site URL, redirect URL and minimum password length (owner)
 
 **Test:** no token gives 401, customer on an admin route gives 403, admin gives 200; session survives a refresh.
 
@@ -104,7 +108,9 @@ D1 to D5 were approved on 2026-11-24. See [ARCHITECTURE.md](ARCHITECTURE.md).
 - [ ] `categories`, `products`, `product_variants`, `product_images`, `inventory`
 - [ ] Public: list, details, search, filter, sort, paginate
 - [ ] Admin: product, category and variant CRUD
-- [ ] Seed script
+- [ ] Seed script: 12 Nikon and DJI models with placeholder PKR prices (owner replaces them before launch)
+- [ ] Check whether Wikimedia Commons has suitable openly licensed photos, and keep credit and license with each image
+- [ ] Remove public `EXECUTE` from `rls_auto_enable()` (security advisor warning)
 
 **Test:** all endpoints through Swagger; drafts stay hidden from the public; invalid input gives 400.
 
@@ -113,7 +119,7 @@ D1 to D5 were approved on 2026-11-24. See [ARCHITECTURE.md](ARCHITECTURE.md).
 **Learn:** complex forms, tables, file uploads.
 
 - [ ] Admin layout and navigation
-- [ ] Category and product CRUD screens, including size and color variants
+- [ ] Category and product CRUD screens, including variants such as body only, lens kit or drone bundle
 - [ ] Image upload to Supabase Storage with type and size checks
 - [ ] Inventory screen with low-stock view and stock-change history
 
@@ -195,6 +201,7 @@ D1 to D5 were approved on 2026-11-24. See [ARCHITECTURE.md](ARCHITECTURE.md).
 - [ ] Shipping methods and rates; shipments with tracking numbers
 - [ ] Customer order tracking timeline
 - [ ] In-app notifications and transactional email
+- [ ] Email provider for login emails too: Supabase's built-in email is for testing only
 
 **Test:** an admin status change appears in customer tracking and notifications; a failed email does not break an order.
 
@@ -209,7 +216,7 @@ D1 to D5 were approved on 2026-11-24. See [ARCHITECTURE.md](ARCHITECTURE.md).
 
 - [ ] Security review of RLS, grants, guards and rate limiting
 - [ ] End-to-end tests for the main journeys
-- [ ] Performance, accessibility and SEO pass
+- [ ] Performance, accessibility and SEO pass, including loading pages separately to reduce the first download
 - [ ] GitHub Actions for lint, test and build
 - [ ] Separate production Supabase project, backups and monitoring
 - [ ] Deployment and release checklist

@@ -27,7 +27,8 @@ describe('Database security', () => {
 
   async function createUser(fullName: string) {
     const email = `db-test-${randomUUID()}@example.com`;
-    const password = randomUUID();
+    // The prefix satisfies any password rules set in Supabase.
+    const password = `Aa1!${randomUUID()}`;
     const created = await system.auth.admin.createUser({
       email,
       password,

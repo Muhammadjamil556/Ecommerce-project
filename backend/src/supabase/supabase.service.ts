@@ -1,6 +1,15 @@
-import { Injectable } from '@nestjs/common';
+import {
+  Injectable,
+  ServiceUnavailableException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { SupabaseClient, createClient } from '@supabase/supabase-js';
+import {
+  SupabaseClient,
+  createClient,
+  isAuthRetryableFetchError,
+} from '@supabase/supabase-js';
+import type { AuthenticatedUser } from '../common/types/authenticated-user.js';
 import { EnvironmentVariables } from '../config/env.validation.js';
 
 // A server handles many users at once, so it must never store anyone's session.
@@ -16,6 +25,8 @@ export class SupabaseService {
   private readonly url: string;
   private readonly publishableKey: string;
   private readonly systemClient: SupabaseClient;
+  /** Only verifies tokens. Keeps Supabase's public keys cached between requests. */
+  private readonly tokenVerifier: SupabaseClient;
 
   constructor(config: ConfigService<EnvironmentVariables, true>) {
     this.url = config.get('SUPABASE_URL', { infer: true });
@@ -27,6 +38,42 @@ export class SupabaseService {
       config.get('SUPABASE_SECRET_KEY', { infer: true }),
       { auth: SERVER_AUTH_OPTIONS },
     );
+    this.tokenVerifier = createClient(this.url, this.publishableKey, {
+      auth: SERVER_AUTH_OPTIONS,
+    });
+  }
+
+  /** Checks the signature and expiry, and that this project issued it to a user. */
+  async verifyAccessToken(accessToken: string): Promise<AuthenticatedUser> {
+    const claims = await this.getClaims(accessToken);
+
+    if (
+      claims?.iss !== `${this.url}/auth/v1` ||
+      claims.aud !== 'authenticated' ||
+      claims.role !== 'authenticated' ||
+      !claims.sub ||
+      !claims.email
+    ) {
+      throw invalidSession();
+    }
+
+    return { id: claims.sub, email: claims.email, accessToken };
+  }
+
+  private async getClaims(accessToken: string) {
+    let result: Awaited<ReturnType<typeof this.tokenVerifier.auth.getClaims>>;
+    try {
+      result = await this.tokenVerifier.auth.getClaims(accessToken);
+    } catch {
+      // Some badly formed tokens throw instead of returning an error.
+      throw invalidSession();
+    }
+
+    // Supabase being unreachable does not mean the user's token is wrong.
+    if (isAuthRetryableFetchError(result.error)) {
+      throw new ServiceUnavailableException('Login check is unavailable.');
+    }
+    return result.data?.claims;
   }
 
   /**
@@ -47,4 +94,8 @@ export class SupabaseService {
   asSystem(): SupabaseClient {
     return this.systemClient;
   }
+}
+
+function invalidSession() {
+  return new UnauthorizedException('Your session is invalid or has expired.');
 }

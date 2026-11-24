@@ -8,6 +8,7 @@ export function setupSwagger(app: INestApplication): void {
     .setTitle('Ecommerce API')
     .setDescription('REST API for the ecommerce storefront and admin dashboard')
     .setVersion('1.0')
+    .addBearerAuth()
     .build();
 
   SwaggerModule.setup(SWAGGER_PATH, app, () =>

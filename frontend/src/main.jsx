@@ -4,7 +4,10 @@ import { Provider } from 'react-redux'
 import { RouterProvider } from 'react-router/dom'
 import { router } from '@/app/router'
 import { store } from '@/app/store'
+import { startAuthListener } from '@/features/auth/authListener'
 import './index.css'
+
+startAuthListener(store)
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>

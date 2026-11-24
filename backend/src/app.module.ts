@@ -1,10 +1,14 @@
 import { Module, ValidationPipe } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { APP_FILTER, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
+import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import { AllExceptionsFilter } from './common/filters/all-exceptions.filter.js';
+import { AuthGuard } from './common/guards/auth.guard.js';
+import { RolesGuard } from './common/guards/roles.guard.js';
 import { ResponseInterceptor } from './common/interceptors/response.interceptor.js';
 import { validateEnv } from './config/env.validation.js';
+import { AdminModule } from './modules/admin/admin.module.js';
 import { HealthModule } from './modules/health/health.module.js';
+import { UsersModule } from './modules/users/users.module.js';
 import { SupabaseModule } from './supabase/supabase.module.js';
 
 @Module({
@@ -12,9 +16,14 @@ import { SupabaseModule } from './supabase/supabase.module.js';
     ConfigModule.forRoot({ isGlobal: true, validate: validateEnv }),
     SupabaseModule,
     HealthModule,
+    UsersModule,
+    AdminModule,
   ],
   // These apply to every route in the application.
   providers: [
+    // Order matters: first find out who the user is, then what they may do.
+    { provide: APP_GUARD, useClass: AuthGuard },
+    { provide: APP_GUARD, useClass: RolesGuard },
     { provide: APP_FILTER, useClass: AllExceptionsFilter },
     { provide: APP_INTERCEPTOR, useClass: ResponseInterceptor },
     {

@@ -10,6 +10,7 @@ import { Test } from '@nestjs/testing';
 import { IsString } from 'class-validator';
 import request from 'supertest';
 import type { App } from 'supertest/types.js';
+import { Public } from '../src/common/decorators/public.decorator.js';
 import { AppModule } from '../src/app.module.js';
 import { configureApp } from '../src/config/configure-app.js';
 import { SupabaseService } from '../src/supabase/supabase.service.js';
@@ -20,6 +21,7 @@ class ExampleDto {
 }
 
 // Routes that exist only in this test, to exercise the global error handling.
+@Public()
 @Controller('test-only')
 class TestOnlyController {
   @Get('crash')
@@ -86,6 +88,18 @@ describe('Application (e2e)', () => {
     expect(response.headers['access-control-allow-origin']).toBe(
       'http://localhost:5173',
     );
+  });
+
+  it.each([
+    ['no header', undefined],
+    ['another scheme', 'Basic abc'],
+    ['an empty token', 'Bearer '],
+  ])('requires login when there is %s', async (_name, authorization) => {
+    const call = request(app.getHttpServer()).get('/api/v1/users/me');
+    if (authorization) call.set('Authorization', authorization);
+    const response = await call.expect(401);
+
+    expect(response.body.error.code).toBe('UNAUTHORIZED');
   });
 
   it('returns the error format for an unknown route', async () => {

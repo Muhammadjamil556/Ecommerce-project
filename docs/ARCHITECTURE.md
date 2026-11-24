@@ -11,6 +11,11 @@ How the application is designed and which decisions have been approved. For prog
 | D3 | NestJS uses the user's token by default; the secret key only for admin and system work | RLS still protects data if backend code misses a check | Two clients to understand |
 | D4 | Hosted Supabase development project; migrations in `backend/supabase/migrations/` | No Docker needed | Development needs an internet connection |
 | D5 | One Git repository holding both independent apps | One history, simpler setup | None significant at this size |
+| D6 | Users confirm their email before logging in | Nobody can register with someone else's address | Depends on email delivery |
+| D7 | Email and password login only | Simple to start; other methods can be added | No social login yet |
+| D8 | One currency, Pakistani rupees (PKR), stored as whole paisa | Simple and exact | No other currencies |
+| D9 | The store sells Nikon and DJI cameras and drones | Owner's choice | Variants are options such as body only or lens kit, not only size and color |
+| D10 | The store's own database is the product catalog. A seed script adds about 12 real models; images need permission or an open license | No official Nikon or DJI catalog API was found; the store does not depend on another company | Details, prices and image credits are maintained by us |
 
 ## Request flow
 
@@ -51,6 +56,28 @@ Error:
 ```
 
 A 5xx response always carries a generic message. The real cause is written to the server log only.
+
+## Authentication and authorization
+
+Authentication asks who you are (401 if unknown). Authorization asks what you may do (403 if not allowed).
+
+```text
+1. LoginPage       sends email and password to Supabase Auth (not to NestJS)
+2. Supabase        returns a short-lived access token; supabase-js stores and refreshes it
+3. authListener    notices the login and loads the profile and role from NestJS into Redux
+4. apiClient       adds "Authorization: Bearer <token>" to every API request
+5. AuthGuard       verifies the token's signature, expiry, project and audience
+6. RolesGuard      for @Roles() routes, reads the role from the database
+7. Controller      receives the verified user through @CurrentUser()
+```
+
+- **Every API route needs login unless it is marked `@Public()`.** Forgetting a decorator leaves a route closed, not open.
+- Roles are read on each admin request, so removing a role works immediately even though the old token is still valid.
+- Redux holds the profile and role but not the token. Route guards in React are for convenience only.
+- Tokens are verified locally with Supabase's public keys. An unreachable Supabase gives 503, not 401, so users are not logged out by an outage.
+- Registration and password reset give the same answer for known and unknown addresses.
+- The password reset form opens only from an email link.
+- supabase-js keeps the session in `localStorage`, so a script injected into the site could read it. Never render untrusted HTML.
 
 ## Database access
 

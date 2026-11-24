@@ -2,7 +2,7 @@
 
 A full-stack ecommerce application with a customer storefront and an admin dashboard.
 
-> **Status: foundation.** Both apps run and talk to each other. Store features are not built yet. See the [roadmap](docs/ROADMAP.md).
+> **Status: foundation.** Both apps run and talk to each other. Registration, login and roles work. Store features are not built yet. See the [roadmap](docs/ROADMAP.md).
 
 ## Planned features
 
@@ -120,6 +120,11 @@ Frontend, in a second terminal:
 cd frontend
 npm install
 cp .env.example .env
+```
+
+Fill in the two Supabase values in `frontend/.env` (the URL and the **publishable** key, never the secret key), then:
+
+```bash
 npm run dev
 ```
 
@@ -130,6 +135,44 @@ npm run dev
 | http://localhost:3000/api/docs | Swagger documentation |
 
 Press `Ctrl+C` in a terminal to stop that app. Restart an app after changing its `.env` file.
+
+### Supabase settings
+
+In the Supabase dashboard, under Authentication:
+
+| Setting | Value |
+| --- | --- |
+| Site URL | `http://localhost:5173` |
+| Redirect URLs | `http://localhost:5173/**` |
+| Confirm email | On |
+| Minimum password length | 8 |
+| Password requirements | Lowercase, uppercase letters, digits and symbols |
+
+Supabase's built-in email service is for testing only and sends 2 emails per hour, only to members of your Supabase organization.
+
+### Create the first admin
+
+Register and confirm your email on the website, then run this in the Supabase SQL Editor with your own address:
+
+```sql
+update public.user_roles
+set role = 'admin'
+where user_id = (select id from auth.users where email = 'you@example.com');
+```
+
+It should report one changed row. Reload the website to see the Admin link. There is no way to become an admin through the website or the API.
+
+### Optional: Supabase MCP for Claude Code
+
+Lets Claude Code inspect the **development** project: tables, logs and advisors. This setup can also **change the database**, so keep tool confirmations on and never use it with production.
+
+Run in the project's root folder. Replace `YOUR_PROJECT_REF` with the ID at the start of your Supabase URL:
+
+```bash
+claude mcp add --scope local --transport http supabase "https://mcp.supabase.com/mcp?project_ref=YOUR_PROJECT_REF&features=database,debugging,development,docs"
+```
+
+Then run `claude /mcp`, choose **supabase**, then **Authenticate**. Add `&read_only=true` to the address to prevent SQL from changing data. To remove it: `claude mcp remove supabase --scope local`.
 
 ### Environment variables
 
@@ -170,6 +213,11 @@ The backend also has:
 | `EADDRINUSE` or "Port 5173 is already in use" | The app is already running in another terminal |
 | "Invalid environment variables" | `.env` is missing or has a wrong value. Compare it with `.env.example` |
 | "API connected, but the database is not responding" | Migration not applied, wrong key, or the Supabase project is paused. The backend terminal shows the reason |
+| Email link opens the wrong address | The Supabase Site URL and Redirect URLs are not set as described above |
+| No email arrives | Check spam. The built-in email service may have reached its limit, or may not send to that address |
+| "Too many emails were sent" | The built-in email limit. Wait, then try again |
+| API returns 401 | Not logged in, or the token expired |
+| API returns 403 | Logged in, but without the required role |
 | "permission denied for table" | A migration is missing a `GRANT` for that role |
 | A query returns no rows and no error | Row Level Security is hiding them |
 | Backend cannot find a module you just created | Relative imports must end in `.js`, even for `.ts` files |

@@ -1,6 +1,6 @@
 # Development Roadmap
 
-**Current phase:** Phase 5, admin catalog. 5A and 5B are done. Adding photos to the 12 products is in progress.
+**Current phase:** Phase 5 complete. Phase 6 waits for the owner's approval.
 
 Status: `[ ]` not started, `[~]` in progress, `[x]` implemented and tested.
 
@@ -15,7 +15,7 @@ Each phase ends with a demo, test steps and an explanation. The next phase start
 | 2 | Supabase connection | NestJS reads from the database; migrations work | `[x]` |
 | 3 | Authentication and roles | Register, log in, protected and admin-only routes | `[x]` |
 | 4 | Catalog API | Categories, products and variants through Swagger | `[x]` |
-| 5 | Admin catalog | Admin manages products, images and stock | `[~]` |
+| 5 | Admin catalog | Admin manages products, images and stock | `[x]` |
 | 6 | Storefront | Customers browse, search and filter real products | `[ ]` |
 | 7 | Profile and addresses | Customers manage their account | `[ ]` |
 | 8 | Cart and wishlist | Saved cart and wishlist | `[ ]` |
@@ -124,7 +124,7 @@ D1 to D10 were approved on 2026-11-24, D11 on 2026-11-25. See [ARCHITECTURE.md](
 - [x] 5B: Image upload to Supabase Storage with type and size checks, and a credit and license for each photo
 - [x] 5B: Inventory screen with low-stock view and stock-change history
 - [x] Owner tried photos and inventory
-- [ ] Add photos to the 12 products (open-license candidates; needs the owner's approval)
+- [x] Open-license photos approved by the owner and added to 11 of the 12 development products, with photographer, license and source page. None for the DJI RS 4 (only the RS 4 Pro was found, a different model)
 
 **Test:** create a product with variants and images; a customer cannot reach any admin function.
 
@@ -135,6 +135,7 @@ D1 to D10 were approved on 2026-11-24, D11 on 2026-11-25. See [ARCHITECTURE.md](
 - [ ] Responsive homepage, header, footer and category navigation
 - [ ] Product listing with search, filters, sorting and pagination kept in the URL
 - [ ] Product details with gallery, variant selection and stock status
+- [ ] Photo credits: photographer, source page, license link and "resized" (required by CC BY and CC BY-SA)
 
 **Test:** mobile, tablet and desktop; a filtered link still works when shared.
 

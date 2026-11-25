@@ -4,7 +4,7 @@ Short hand-over for a new session. Keep it under 60 lines: replace old text, do 
 
 **Last updated:** 2026-11-25. Phases 0 to 4, 5A and 5B are done and pushed.
 
-**Next:** add open-license photos to the 12 products (owner approved looking for them; show the list before adding any). Then Phase 6, storefront (needs approval).
+**Next:** Phase 6, storefront (needs approval). It must show a credit for each photo: photographer, source page, license link and "resized".
 
 ## What works
 
@@ -14,7 +14,7 @@ Short hand-over for a new session. Keep it under 60 lines: replace old text, do 
 | Catalog API | Public list, search, filters, sorting, details; admin CRUD for categories, products and variants; photos; stock with history |
 | Admin screens | Dashboard, category list and form, product list with filters, product form, status, variants, photos, inventory with history |
 | Website | Home, auth pages, account page. **No store pages for products yet** |
-| Development database | 5 migrations applied; 5 categories, 12 published products, 24 variants, no photos; 1 admin, 1 customer |
+| Development database | 5 migrations applied; 5 categories, 12 published products, 24 variants, 11 photos (one each, none for the DJI RS 4); 1 admin, 1 customer |
 
 Last full check (2026-11-25): backend 71 unit, 102 end-to-end, 54 real-project tests; frontend 145 tests; lint, types and builds pass.
 
@@ -22,7 +22,7 @@ Last full check (2026-11-25): backend 71 unit, 102 end-to-end, 54 real-project t
 
 | Item | When |
 | --- | --- |
-| Photos: open-license candidates found through Openverse for 11 of 12 products (none for DJI RS 4). Not looked at yet; confirm each license at its source | After 5B, with approval |
+| Photos: DJI RS 4 has none. Replace at least Pocket 3, Z50II (shop backgrounds) and 24-70mm (shown on a Nikon Z 6); check every license again. The licenses do not cover trademarks | Owner, before launch |
 | Prices and stock are placeholders; variant and bundle names unconfirmed | Owner, before launch |
 | Email service (Brevo suggested): Supabase's built-in limit is very low | Before launch, or sooner if it blocks work |
 | Leaked password protection is off; JavaScript bundle is large | Phase 16 |
@@ -51,6 +51,7 @@ Read only what the task needs.
 - Forms send only changed fields, compared with what the form started from, so they do not undo another admin's change.
 - `specifications` and `options` are `jsonb`, which does not keep the order of keys. Decide on display order in Phase 6.
 - Leaving a form with unsaved changes gives no warning yet.
+- The 11 photos came from Wikimedia Commons and were added once through `AdminImagesService`. `npm run seed` does not add photos.
 - `commons.wikimedia.org` does not load on the owner's network; Openverse and `upload.wikimedia.org` do.
 - Before a commit, the secret scan must prove that its rules work (positive control) and stop on any error.
 - The owner runs both development servers (ports 3000 and 5173). Leave them running.

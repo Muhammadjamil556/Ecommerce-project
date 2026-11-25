@@ -2,9 +2,9 @@
 
 Short hand-over for a new session. Keep it under 60 lines: replace old text, do not add a diary. Details are in the [roadmap](ROADMAP.md) and [architecture](ARCHITECTURE.md).
 
-**Last updated:** 2026-11-25. Phases 0 to 4 are done and pushed (`a383e9c`).
+**Last updated:** 2026-11-25. Phases 0 to 4 are done and pushed. Phase 5A is built and tested.
 
-**Next:** Phase 5, admin catalog. Not started; needs the owner's approval. Suggested split: **5A** layout, categories, products and variants; **5B** photos and inventory.
+**Next:** Phase 5B, photos and inventory. Not started; needs the owner's approval. It needs a migration (storage bucket, stock history).
 
 ## What works
 
@@ -12,10 +12,11 @@ Short hand-over for a new session. Keep it under 60 lines: replace old text, do 
 | --- | --- |
 | Accounts | Register, confirm email, log in, log out, reset password (real emails tested); admin and customer roles |
 | Catalog API | Public list, search, filters, sorting, details; admin CRUD for categories, products and variants |
-| Website | Home, auth pages, account page, admin summary page. **No product or admin catalog screens yet** |
+| Admin screens | Dashboard, category list and form, product list with filters, product form, status, variants |
+| Website | Home, auth pages, account page. **No store pages for products yet** |
 | Development database | 3 migrations applied; 5 categories, 12 published products, 24 variants; 1 admin, 1 customer |
 
-Last full check (2026-11-25): backend 57 unit, 65 end-to-end, 36 real-project tests; frontend 55 tests; lint, types and builds pass.
+Last full check (2026-11-25): backend 57 unit, 65 end-to-end, 36 real-project tests; frontend 122 tests; lint, types and builds pass.
 
 ## Open items
 
@@ -34,9 +35,9 @@ Read only what the task needs.
 
 | Task | Start with |
 | --- | --- |
-| Admin screens | `frontend/src/features/admin/`, `app/router.jsx`, `app/store.js`, `components/layout/` |
-| Form pattern | `frontend/src/features/auth/pages/RegisterPage.jsx`, `auth/schemas/`, `components/common/FormField.jsx` |
-| API call pattern | `frontend/src/features/admin/api/adminApi.js`, `lib/apiClient.js`, `lib/apiError.js` |
+| Admin screens | `frontend/src/features/adminProducts/`, `features/adminCategories/`, `app/router.jsx`, `components/layout/AdminLayout.jsx` |
+| Form pattern | `features/adminProducts/components/ProductForm.jsx`, its `schemas/`, `lib/formRules.js` |
+| API call pattern | `features/adminProducts/api/`, `adminProductsSlice.js`, `lib/createApiThunk.js` |
 | Catalog endpoints and DTOs | `backend/src/modules/products/`, `backend/src/modules/categories/` |
 | Shared backend helpers | `backend/src/common/` |
 | Tables, grants, RLS | `backend/supabase/migrations/*_create_catalog.sql` |
@@ -48,6 +49,9 @@ Read only what the task needs.
 - `service_role` has column-level grants, so a Supabase `upsert` on variants fails. `is_in_stock` is set only by a trigger.
 - Supabase password rules: 8 or more characters with lowercase, uppercase, digit and symbol. Test passwords must meet them.
 - `test:db` creates and deletes its own `db-test-` rows in the development project. Check that none remain.
+- Forms send only changed fields, compared with what the form started from, so they do not undo another admin's change.
+- `specifications` and `options` are `jsonb`, which does not keep the order of keys. Decide on display order in Phase 6.
+- Leaving a form with unsaved changes gives no warning yet.
 - `commons.wikimedia.org` does not load on the owner's network; Openverse and `upload.wikimedia.org` do.
 - Before a commit, the secret scan must prove that its rules work (positive control) and stop on any error.
 - The owner runs both development servers (ports 3000 and 5173). Leave them running.

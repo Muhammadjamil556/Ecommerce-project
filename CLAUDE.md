@@ -120,6 +120,7 @@ Approved 2026-11-24 (reasons in `docs/ARCHITECTURE.md`):
 - Use the Supabase client in `features/auth` and `lib` only. Never query tables or storage with it.
 - Clear user-specific Redux state on `sessionEnded`.
 - Do not call Supabase or the API directly inside `onAuthStateChange`; it can deadlock. See `authListener.js`.
+- Use `createApiThunk`, `lib/money.js` (rupees in inputs, paisa in the API) and `pickChanges` (send only changed fields).
 - Validate forms with Zod. This is for user experience; backend validation is the authority.
 - Handle loading, empty and error states on every screen that fetches data.
 - Responsive and accessible by default.

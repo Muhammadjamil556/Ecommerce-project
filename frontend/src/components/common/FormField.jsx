@@ -2,8 +2,17 @@ import { useId } from 'react'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 
-/** Label, input and error message. Use with React Hook Form: {...register('email')} */
-export function FormField({ label, error, hint, ...inputProps }) {
+/**
+ * Label, input and error message. Use with React Hook Form: {...register('email')}
+ * Pass "as" for another control, such as as={Textarea}.
+ */
+export function FormField({
+  label,
+  error,
+  hint,
+  as: Control = Input,
+  ...controlProps
+}) {
   const id = useId()
   const messageId = `${id}-message`
   const message = error?.message ?? hint
@@ -11,11 +20,11 @@ export function FormField({ label, error, hint, ...inputProps }) {
   return (
     <div className="space-y-2">
       <Label htmlFor={id}>{label}</Label>
-      <Input
+      <Control
         id={id}
         aria-invalid={Boolean(error)}
         aria-describedby={message ? messageId : undefined}
-        {...inputProps}
+        {...controlProps}
       />
       {message && (
         <p

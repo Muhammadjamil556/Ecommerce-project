@@ -1,6 +1,6 @@
 # Development Roadmap
 
-**Current phase:** Phase 4 complete. Phase 5, admin catalog, waits for the owner's approval.
+**Current phase:** Phase 5, admin catalog. 5A (layout, categories, products, variants) is built and tested; 5B (photos and inventory) waits for the owner's approval.
 
 Status: `[ ]` not started, `[~]` in progress, `[x]` implemented and tested.
 
@@ -15,7 +15,7 @@ Each phase ends with a demo, test steps and an explanation. The next phase start
 | 2 | Supabase connection | NestJS reads from the database; migrations work | `[x]` |
 | 3 | Authentication and roles | Register, log in, protected and admin-only routes | `[x]` |
 | 4 | Catalog API | Categories, products and variants through Swagger | `[x]` |
-| 5 | Admin catalog | Admin manages products, images and stock | `[ ]` |
+| 5 | Admin catalog | Admin manages products, images and stock | `[~]` |
 | 6 | Storefront | Customers browse, search and filter real products | `[ ]` |
 | 7 | Profile and addresses | Customers manage their account | `[ ]` |
 | 8 | Cart and wishlist | Saved cart and wishlist | `[ ]` |
@@ -119,10 +119,10 @@ D1 to D10 were approved on 2026-11-24. See [ARCHITECTURE.md](ARCHITECTURE.md).
 
 **Learn:** complex forms, tables, file uploads.
 
-- [ ] Admin layout and navigation
-- [ ] Category and product CRUD screens, including variants such as body only, lens kit or drone bundle
-- [ ] Image upload to Supabase Storage with type and size checks, and a credit and license for each photo
-- [ ] Inventory screen with low-stock view and stock-change history
+- [x] 5A: Admin layout and navigation
+- [x] 5A: Category and product CRUD screens, including variants such as body only, lens kit or drone bundle
+- [ ] 5B: Image upload to Supabase Storage with type and size checks, and a credit and license for each photo
+- [ ] 5B: Inventory screen with low-stock view and stock-change history
 
 **Test:** create a product with variants and images; a customer cannot reach any admin function.
 

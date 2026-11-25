@@ -8,7 +8,8 @@ export function Header() {
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
         <Link to="/" className="flex items-center gap-2 font-semibold">
           <ShoppingBag className="size-5" aria-hidden="true" />
-          Ecommerce
+          {/* Very small screens need the room for the menu. */}
+          <span className="max-[24rem]:sr-only">Ecommerce</span>
         </Link>
         <HeaderNav />
       </div>

@@ -2,7 +2,7 @@
 
 A full-stack ecommerce application with a customer storefront and an admin dashboard.
 
-> **Status: foundation.** Both apps run and talk to each other. Registration, login, roles and the product API work. The store pages are not built yet. See the [roadmap](docs/ROADMAP.md).
+> **Status: foundation.** Both apps run and talk to each other. Registration, login, roles, the product API and the admin catalog screens work. The store pages are not built yet. See the [roadmap](docs/ROADMAP.md).
 
 ## Planned features
 
@@ -36,7 +36,7 @@ A full-stack ecommerce application with a customer storefront and an admin dashb
 
 ## Structure
 
-The target layout. `products` works in the backend today; its frontend folder comes later.
+The target layout. `products` works in the backend today; the frontend has `adminProducts`, and the store's `products` folder comes later.
 
 ```text
 Ecommerce-project/

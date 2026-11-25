@@ -1,9 +1,15 @@
 import { createBrowserRouter } from 'react-router'
 import { ErrorPage } from '@/components/common/ErrorPage'
 import { NotFoundPage } from '@/components/common/NotFoundPage'
+import { AdminLayout } from '@/components/layout/AdminLayout'
 import { StorefrontLayout } from '@/components/layout/StorefrontLayout'
 import { AccountPage } from '@/features/account/pages/AccountPage'
 import { AdminHomePage } from '@/features/admin/pages/AdminHomePage'
+import { AdminCategoriesPage } from '@/features/adminCategories/pages/AdminCategoriesPage'
+import { AdminCategoryPage } from '@/features/adminCategories/pages/AdminCategoryPage'
+import { AdminNewProductPage } from '@/features/adminProducts/pages/AdminNewProductPage'
+import { AdminProductPage } from '@/features/adminProducts/pages/AdminProductPage'
+import { AdminProductsPage } from '@/features/adminProducts/pages/AdminProductsPage'
 import { GuestOnly } from '@/features/auth/components/GuestOnly'
 import { RequireAdmin } from '@/features/auth/components/RequireAdmin'
 import { RequireAuth } from '@/features/auth/components/RequireAuth'
@@ -43,7 +49,20 @@ export const router = createBrowserRouter([
           {
             path: 'admin',
             element: <RequireAdmin />,
-            children: [{ index: true, element: <AdminHomePage /> }],
+            children: [
+              {
+                element: <AdminLayout />,
+                children: [
+                  { index: true, element: <AdminHomePage /> },
+                  { path: 'products', element: <AdminProductsPage /> },
+                  { path: 'products/new', element: <AdminNewProductPage /> },
+                  { path: 'products/:id', element: <AdminProductPage /> },
+                  { path: 'categories', element: <AdminCategoriesPage /> },
+                  { path: 'categories/new', element: <AdminCategoryPage /> },
+                  { path: 'categories/:id', element: <AdminCategoryPage /> },
+                ],
+              },
+            ],
           },
         ],
       },

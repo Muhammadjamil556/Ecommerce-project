@@ -36,7 +36,7 @@ A full-stack ecommerce application with a customer storefront and an admin dashb
 
 ## Structure
 
-The target layout. `products` is an example of a feature that comes later; `health` is the working one today.
+The target layout. `products` works in the backend today; its frontend folder comes later.
 
 ```text
 Ecommerce-project/
@@ -236,6 +236,7 @@ The backend also has:
 
 ## Documentation
 
+- [Progress](docs/PROGRESS.md): current state and open items
 - [Roadmap](docs/ROADMAP.md): phases, progress and open decisions
 - [Architecture](docs/ARCHITECTURE.md): design, decisions and request flow
 - [CLAUDE.md](CLAUDE.md): working, security and coding rules

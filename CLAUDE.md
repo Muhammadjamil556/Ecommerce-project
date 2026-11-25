@@ -9,7 +9,7 @@ The project owner is a beginner in full-stack development. The goal is a working
 
 Act as senior software architect, senior full-stack developer and programming mentor.
 
-Check `docs/ROADMAP.md` for the current phase and status before starting work.
+Start with `docs/PROGRESS.md` (current state, open items, where to look). Open `docs/ROADMAP.md` or `docs/ARCHITECTURE.md` only when needed.
 
 ## Technology stack (do not change without approval)
 
@@ -31,14 +31,14 @@ Version notes (checked 2026-11-24; re-check when installing):
 
 ## Working rules
 
-1. Inspect existing files before modifying them. Never overwrite code without understanding it.
+1. Inspect existing files before modifying them. Never overwrite code without understanding it. Read only files relevant to the task; do not rescan the codebase. Preserve existing functionality and leave working code alone.
 2. Work in small phases. Never implement the whole application at once.
 3. **Do not start the next phase without the owner's approval.**
 4. Ask before any major architectural decision that has not been specified.
 5. Do not silently change the stack or architecture, or add unnecessary dependencies.
 6. Run relevant tests and builds after implementing. Fix errors introduced by the change.
 7. Never claim a feature is complete unless it is implemented and tested. Report failures honestly.
-8. Update `docs/ROADMAP.md` when work is completed, and keep other docs accurate.
+8. Update `docs/ROADMAP.md` and `docs/PROGRESS.md` when work is completed, and keep other docs accurate. Keep this file and `PROGRESS.md` short.
 9. Do not commit or push unless the owner asks. The GitHub repository is **public**: check for secrets and personal details first, and use the account's GitHub no-reply address as the commit email.
 
 ## Mentoring rules

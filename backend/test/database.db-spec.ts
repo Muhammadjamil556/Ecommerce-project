@@ -132,6 +132,42 @@ describe('Database security', () => {
     },
   );
 
+  it.each([
+    'categories',
+    'products',
+    'product_variants',
+    'product_images',
+    'inventory',
+  ])('blocks every write to %s from the browser', async (table) => {
+    const column = table === 'inventory' ? 'variant_id' : 'id';
+
+    for (const client of [createPublicClient(), ann.client]) {
+      const insert = await client.from(table).insert({});
+      const update = await client
+        .from(table)
+        .update({ created_at: '2000-01-01' })
+        .eq(column, ann.id);
+      const remove = await client.from(table).delete().eq(column, ann.id);
+
+      expect(insert.error?.code).toBe(PERMISSION_DENIED);
+      expect(update.error?.code).toBe(PERMISSION_DENIED);
+      expect(remove.error?.code).toBe(PERMISSION_DENIED);
+    }
+  });
+
+  it('hides exact stock from the browser', async () => {
+    for (const client of [createPublicClient(), ann.client]) {
+      const { error } = await client.from('inventory').select();
+      expect(error?.code).toBe(PERMISSION_DENIED);
+    }
+  });
+
+  it('does not let the browser run the RLS safety function', async () => {
+    const { error } = await createPublicClient().rpc('rls_auto_enable');
+    // Denied, or not present in this project.
+    expect([PERMISSION_DENIED, 'PGRST202']).toContain(error?.code);
+  });
+
   it('lets the backend system client read every user', async () => {
     const { data, error } = await system
       .from('user_roles')

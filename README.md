@@ -2,7 +2,7 @@
 
 A full-stack ecommerce application with a customer storefront and an admin dashboard.
 
-> **Status: foundation.** Both apps run and talk to each other. Registration, login and roles work. Store features are not built yet. See the [roadmap](docs/ROADMAP.md).
+> **Status: foundation.** Both apps run and talk to each other. Registration, login, roles and the product API work. The store pages are not built yet. See the [roadmap](docs/ROADMAP.md).
 
 ## Planned features
 
@@ -114,6 +114,8 @@ npx supabase db push --remote
 npm run start:dev
 ```
 
+To add 12 sample products (real models, **placeholder prices and stock**), run `npm run seed` in `backend/`. It skips anything that already exists and refuses to run when `NODE_ENV=production`.
+
 Frontend, in a second terminal:
 
 ```bash
@@ -148,7 +150,7 @@ In the Supabase dashboard, under Authentication:
 | Minimum password length | 8 |
 | Password requirements | Lowercase, uppercase letters, digits and symbols |
 
-Supabase's built-in email service is for testing only and sends 2 emails per hour, only to members of your Supabase organization.
+Supabase's built-in email service is for testing only and sends very few emails per hour (the limit can change), only to members of your Supabase organization.
 
 ### Create the first admin
 
@@ -161,6 +163,14 @@ where user_id = (select id from auth.users where email = 'you@example.com');
 ```
 
 It should report one changed row. Reload the website to see the Admin link. There is no way to become an admin through the website or the API.
+
+### Try the admin API in Swagger
+
+1. Log in on the website as an admin.
+2. In the browser's developer tools, open Application > Local Storage > `http://localhost:5173`. In the entry ending in `-auth-token`, copy the value of `access_token`.
+3. Open http://localhost:3000/api/docs, choose **Authorize** and paste it.
+
+The token works like your password until it expires. Never share it or commit it.
 
 ### Optional: Supabase MCP for Claude Code
 
@@ -218,6 +228,8 @@ The backend also has:
 | "Too many emails were sent" | The built-in email limit. Wait, then try again |
 | API returns 401 | Not logged in, or the token expired |
 | API returns 403 | Logged in, but without the required role |
+| API returns 409 | The request conflicts with existing data, such as a slug that is already used |
+| A product is missing from the public API | It is not published, its category is inactive, or it has no active variant |
 | "permission denied for table" | A migration is missing a `GRANT` for that role |
 | A query returns no rows and no error | Row Level Security is hiding them |
 | Backend cannot find a module you just created | Relative imports must end in `.js`, even for `.ts` files |

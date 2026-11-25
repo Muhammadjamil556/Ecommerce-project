@@ -1,0 +1,363 @@
+{
+  "note": "Real models, but the prices and stock are PLACEHOLDERS. Replace them before launch. Prices are in paisa.",
+  "categories": [
+    { "name": "Cameras", "slug": "cameras", "sort_order": 1 },
+    { "name": "Lenses", "slug": "lenses", "sort_order": 2 },
+    { "name": "Drones", "slug": "drones", "sort_order": 3 },
+    {
+      "name": "Action & Pocket Cameras",
+      "slug": "action-pocket-cameras",
+      "sort_order": 4
+    },
+    { "name": "Stabilizers", "slug": "stabilizers", "sort_order": 5 }
+  ],
+  "products": [
+    {
+      "category": "cameras",
+      "brand": "Nikon",
+      "name": "Nikon Z8",
+      "slug": "nikon-z8",
+      "description": "A full-frame mirrorless camera with a fast stacked sensor, for demanding photo and video work.",
+      "specifications": {
+        "Sensor": "Full frame, stacked CMOS",
+        "Effective pixels": "45.7 MP",
+        "Processor": "EXPEED 7",
+        "Lens mount": "Nikon Z",
+        "Weight": "910 g with battery and card"
+      },
+      "variants": [
+        {
+          "sku": "NIK-Z8-BODY",
+          "name": "Body only",
+          "options": { "Kit": "Body only" },
+          "price_minor": 99999900,
+          "stock": 6
+        },
+        {
+          "sku": "NIK-Z8-24120",
+          "name": "With 24-120mm f/4 S",
+          "options": { "Kit": "24-120mm f/4 S" },
+          "price_minor": 124999900,
+          "stock": 3
+        }
+      ]
+    },
+    {
+      "category": "cameras",
+      "brand": "Nikon",
+      "name": "Nikon Z6III",
+      "slug": "nikon-z6iii",
+      "description": "A full-frame mirrorless all-rounder with a partially stacked sensor.",
+      "specifications": {
+        "Sensor": "Full frame, partially stacked CMOS",
+        "Effective pixels": "24.5 MP",
+        "Processor": "EXPEED 7",
+        "Lens mount": "Nikon Z",
+        "Weight": "760 g with battery and card"
+      },
+      "variants": [
+        {
+          "sku": "NIK-Z6III-BODY",
+          "name": "Body only",
+          "options": { "Kit": "Body only" },
+          "price_minor": 64999900,
+          "stock": 8
+        },
+        {
+          "sku": "NIK-Z6III-24120",
+          "name": "With 24-120mm f/4 S",
+          "options": { "Kit": "24-120mm f/4 S" },
+          "price_minor": 89999900,
+          "stock": 4
+        }
+      ]
+    },
+    {
+      "category": "cameras",
+      "brand": "Nikon",
+      "name": "Nikon Z5II",
+      "slug": "nikon-z5ii",
+      "description": "An approachable full-frame mirrorless camera for photo and video.",
+      "specifications": {
+        "Sensor": "Full frame CMOS",
+        "Effective pixels": "24.5 MP",
+        "Processor": "EXPEED 7",
+        "Lens mount": "Nikon Z"
+      },
+      "variants": [
+        {
+          "sku": "NIK-Z5II-BODY",
+          "name": "Body only",
+          "options": { "Kit": "Body only" },
+          "price_minor": 47999900,
+          "stock": 7
+        },
+        {
+          "sku": "NIK-Z5II-2450",
+          "name": "With 24-50mm f/4-6.3",
+          "options": { "Kit": "24-50mm f/4-6.3" },
+          "price_minor": 56999900,
+          "stock": 0
+        }
+      ]
+    },
+    {
+      "category": "cameras",
+      "brand": "Nikon",
+      "name": "Nikon Z50II",
+      "slug": "nikon-z50ii",
+      "description": "A compact DX (APS-C) mirrorless camera for everyday photos and video.",
+      "specifications": {
+        "Sensor": "DX (APS-C) CMOS",
+        "Effective pixels": "20.9 MP",
+        "Processor": "EXPEED 7",
+        "Lens mount": "Nikon Z"
+      },
+      "variants": [
+        {
+          "sku": "NIK-Z50II-BODY",
+          "name": "Body only",
+          "options": { "Kit": "Body only" },
+          "price_minor": 27999900,
+          "stock": 10
+        },
+        {
+          "sku": "NIK-Z50II-1650",
+          "name": "With 16-50mm VR",
+          "options": { "Kit": "16-50mm VR" },
+          "price_minor": 32999900,
+          "stock": 5
+        }
+      ]
+    },
+    {
+      "category": "cameras",
+      "brand": "Nikon",
+      "name": "Nikon Zfc",
+      "slug": "nikon-zfc",
+      "description": "A DX (APS-C) mirrorless camera with a classic film-camera look.",
+      "specifications": {
+        "Sensor": "DX (APS-C) CMOS",
+        "Effective pixels": "20.9 MP",
+        "Processor": "EXPEED 6",
+        "Lens mount": "Nikon Z"
+      },
+      "variants": [
+        {
+          "sku": "NIK-ZFC-BODY-SLV",
+          "name": "Silver, body only",
+          "options": { "Color": "Silver", "Kit": "Body only" },
+          "price_minor": 25999900,
+          "stock": 4
+        },
+        {
+          "sku": "NIK-ZFC-BODY-BLK",
+          "name": "Black, body only",
+          "options": { "Color": "Black", "Kit": "Body only" },
+          "price_minor": 25999900,
+          "stock": 2
+        }
+      ]
+    },
+    {
+      "category": "lenses",
+      "brand": "Nikon",
+      "name": "NIKKOR Z 24-70mm f/4 S",
+      "slug": "nikkor-z-24-70mm-f4-s",
+      "description": "A compact standard zoom lens for Nikon Z full-frame cameras.",
+      "specifications": {
+        "Mount": "Nikon Z",
+        "Focal length": "24-70 mm",
+        "Maximum aperture": "f/4",
+        "Construction": "14 elements in 11 groups",
+        "Minimum focus distance": "0.3 m",
+        "Filter size": "72 mm",
+        "Weight": "Approx. 500 g"
+      },
+      "variants": [
+        {
+          "sku": "NIK-Z-2470-F4S",
+          "name": "Standard",
+          "options": {},
+          "price_minor": 18999900,
+          "stock": 9
+        }
+      ]
+    },
+    {
+      "category": "drones",
+      "brand": "DJI",
+      "name": "DJI Mini 4 Pro",
+      "slug": "dji-mini-4-pro",
+      "description": "A folding camera drone that weighs under 249 g.",
+      "specifications": {
+        "Sensor": "1/1.3-inch CMOS",
+        "Takeoff weight": "Under 249 g"
+      },
+      "variants": [
+        {
+          "sku": "DJI-MINI4P-RCN2",
+          "name": "With DJI RC-N2",
+          "options": { "Bundle": "DJI RC-N2" },
+          "price_minor": 24999900,
+          "stock": 8
+        },
+        {
+          "sku": "DJI-MINI4P-RC2",
+          "name": "With DJI RC 2",
+          "options": { "Bundle": "DJI RC 2" },
+          "price_minor": 30999900,
+          "stock": 5
+        },
+        {
+          "sku": "DJI-MINI4P-FMC",
+          "name": "Fly More Combo (DJI RC 2)",
+          "options": { "Bundle": "Fly More Combo" },
+          "price_minor": 36999900,
+          "stock": 3
+        }
+      ]
+    },
+    {
+      "category": "drones",
+      "brand": "DJI",
+      "name": "DJI Air 3S",
+      "slug": "dji-air-3s",
+      "description": "A dual-camera drone with a wide camera and a 70mm telephoto camera.",
+      "specifications": {
+        "Wide camera": "1-inch CMOS",
+        "Telephoto camera": "70 mm",
+        "Takeoff weight": "Approx. 724 g",
+        "Maximum flight time": "Up to 45 minutes"
+      },
+      "variants": [
+        {
+          "sku": "DJI-AIR3S-RCN3",
+          "name": "With DJI RC-N3",
+          "options": { "Bundle": "DJI RC-N3" },
+          "price_minor": 37999900,
+          "stock": 6
+        },
+        {
+          "sku": "DJI-AIR3S-FMC",
+          "name": "Fly More Combo (DJI RC 2)",
+          "options": { "Bundle": "Fly More Combo" },
+          "price_minor": 52999900,
+          "stock": 2
+        }
+      ]
+    },
+    {
+      "category": "drones",
+      "brand": "DJI",
+      "name": "DJI Mavic 4 Pro",
+      "slug": "dji-mavic-4-pro",
+      "description": "A flagship camera drone with a Hasselblad main camera.",
+      "specifications": {
+        "Main camera": "Hasselblad, 4/3-inch CMOS",
+        "Main camera effective pixels": "100 MP",
+        "Takeoff weight": "Approx. 1063 g",
+        "Maximum flight time": "Up to 51 minutes"
+      },
+      "variants": [
+        {
+          "sku": "DJI-MAVIC4P-RC2",
+          "name": "With DJI RC 2",
+          "options": { "Bundle": "DJI RC 2" },
+          "price_minor": 74999900,
+          "stock": 0
+        },
+        {
+          "sku": "DJI-MAVIC4P-FMC",
+          "name": "Fly More Combo",
+          "options": { "Bundle": "Fly More Combo" },
+          "price_minor": 94999900,
+          "stock": 0
+        }
+      ]
+    },
+    {
+      "category": "action-pocket-cameras",
+      "brand": "DJI",
+      "name": "DJI Osmo Pocket 3",
+      "slug": "dji-osmo-pocket-3",
+      "description": "A pocket-sized gimbal camera with a 1-inch sensor.",
+      "specifications": {
+        "Sensor": "1-inch CMOS",
+        "Video": "4K up to 60 fps, or 120 fps in slow motion",
+        "Weight": "179 g"
+      },
+      "variants": [
+        {
+          "sku": "DJI-POCKET3-STD",
+          "name": "Standard",
+          "options": { "Bundle": "Standard" },
+          "price_minor": 15999900,
+          "stock": 12
+        },
+        {
+          "sku": "DJI-POCKET3-CRE",
+          "name": "Creator Combo",
+          "options": { "Bundle": "Creator Combo" },
+          "price_minor": 20999900,
+          "stock": 6
+        }
+      ]
+    },
+    {
+      "category": "action-pocket-cameras",
+      "brand": "DJI",
+      "name": "DJI Osmo Action 5 Pro",
+      "slug": "dji-osmo-action-5-pro",
+      "description": "A rugged action camera, waterproof to 20 m without a case.",
+      "specifications": {
+        "Waterproof": "20 m without a case, 60 m with the Waterproof Case",
+        "Weight": "146 g",
+        "Battery life": "Up to 240 minutes"
+      },
+      "variants": [
+        {
+          "sku": "DJI-ACTION5P-STD",
+          "name": "Standard Combo",
+          "options": { "Bundle": "Standard Combo" },
+          "price_minor": 10999900,
+          "stock": 10
+        },
+        {
+          "sku": "DJI-ACTION5P-ADV",
+          "name": "Adventure Combo",
+          "options": { "Bundle": "Adventure Combo" },
+          "price_minor": 14499900,
+          "stock": 4
+        }
+      ]
+    },
+    {
+      "category": "stabilizers",
+      "brand": "DJI",
+      "name": "DJI RS 4",
+      "slug": "dji-rs-4",
+      "description": "A handheld gimbal stabilizer for mirrorless cameras.",
+      "specifications": {
+        "Tested payload": "3 kg",
+        "Battery life": "Up to 12 hours, balanced and stationary"
+      },
+      "variants": [
+        {
+          "sku": "DJI-RS4-STD",
+          "name": "Standard",
+          "options": { "Bundle": "Standard" },
+          "price_minor": 13999900,
+          "stock": 7
+        },
+        {
+          "sku": "DJI-RS4-COMBO",
+          "name": "Combo",
+          "options": { "Bundle": "Combo" },
+          "price_minor": 17499900,
+          "stock": 3
+        }
+      ]
+    }
+  ]
+}

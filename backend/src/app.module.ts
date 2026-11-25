@@ -7,7 +7,9 @@ import { RolesGuard } from './common/guards/roles.guard.js';
 import { ResponseInterceptor } from './common/interceptors/response.interceptor.js';
 import { validateEnv } from './config/env.validation.js';
 import { AdminModule } from './modules/admin/admin.module.js';
+import { CategoriesModule } from './modules/categories/categories.module.js';
 import { HealthModule } from './modules/health/health.module.js';
+import { ProductsModule } from './modules/products/products.module.js';
 import { UsersModule } from './modules/users/users.module.js';
 import { SupabaseModule } from './supabase/supabase.module.js';
 
@@ -18,6 +20,8 @@ import { SupabaseModule } from './supabase/supabase.module.js';
     HealthModule,
     UsersModule,
     AdminModule,
+    CategoriesModule,
+    ProductsModule,
   ],
   // These apply to every route in the application.
   providers: [

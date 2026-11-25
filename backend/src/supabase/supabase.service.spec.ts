@@ -44,6 +44,13 @@ describe('SupabaseService', () => {
     expect(sentHeaders(1).get('authorization')).toBe('Bearer first-token');
   });
 
+  it('sends no user token or secret for visitors', async () => {
+    await service.asVisitor().from('products').select();
+
+    expect(sentHeaders(0).get('apikey')).toBe('sb_publishable_test');
+    expect(sentHeaders(0).get('authorization') ?? '').not.toContain('secret');
+  });
+
   it('uses the secret key for system work', async () => {
     await service.asSystem().from('profiles').select();
 

@@ -1,15 +1,28 @@
-import { Type, applyDecorators } from '@nestjs/common';
-import { ApiExtraModels, ApiOkResponse, getSchemaPath } from '@nestjs/swagger';
+import { HttpStatus, Type, applyDecorators } from '@nestjs/common';
+import { ApiExtraModels, ApiResponse, getSchemaPath } from '@nestjs/swagger';
+
+interface Options {
+  isArray?: boolean;
+  status?: HttpStatus;
+}
 
 /** Documents a response in Swagger as { "data": <model> }. */
-export function ApiDataResponse(model: Type<unknown>) {
+export function ApiDataResponse(
+  model: Type<unknown>,
+  { isArray = false, status = HttpStatus.OK }: Options = {},
+) {
+  const reference = { $ref: getSchemaPath(model) };
+
   return applyDecorators(
     ApiExtraModels(model),
-    ApiOkResponse({
+    ApiResponse({
+      status,
       schema: {
         type: 'object',
         required: ['data'],
-        properties: { data: { $ref: getSchemaPath(model) } },
+        properties: {
+          data: isArray ? { type: 'array', items: reference } : reference,
+        },
       },
     }),
   );

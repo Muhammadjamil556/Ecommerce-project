@@ -1,6 +1,6 @@
 # Development Roadmap
 
-**Current phase:** Phase 3, authentication and roles. Built and tested; waiting for one real password reset email. Registration emails and the first admin are done.
+**Current phase:** Phase 4 complete. Phase 5, admin catalog, waits for the owner's approval.
 
 Status: `[ ]` not started, `[~]` in progress, `[x]` implemented and tested.
 
@@ -13,8 +13,8 @@ Each phase ends with a demo, test steps and an explanation. The next phase start
 | 0 | Planning | Documents and agreed architecture | `[x]` |
 | 1 | Foundation | React page shows a live response from NestJS | `[x]` |
 | 2 | Supabase connection | NestJS reads from the database; migrations work | `[x]` |
-| 3 | Authentication and roles | Register, log in, protected and admin-only routes | `[~]` |
-| 4 | Catalog API | Categories, products and variants through Swagger | `[ ]` |
+| 3 | Authentication and roles | Register, log in, protected and admin-only routes | `[x]` |
+| 4 | Catalog API | Categories, products and variants through Swagger | `[x]` |
 | 5 | Admin catalog | Admin manages products, images and stock | `[ ]` |
 | 6 | Storefront | Customers browse, search and filter real products | `[ ]` |
 | 7 | Profile and addresses | Customers manage their account | `[ ]` |
@@ -90,7 +90,7 @@ D1 to D10 were approved on 2026-11-24. See [ARCHITECTURE.md](ARCHITECTURE.md).
 
 - [x] Log in, log out and reset password
 - [x] Register, including a real confirmation email
-- [~] Forgot password (tested without sending email; the real test hit Supabase's limit of 2 emails per hour)
+- [x] Forgot password, including a real reset email
 - [x] Auth state in Redux; Axios attaches the access token
 - [x] NestJS auth guard, roles guard and `@CurrentUser()`
 - [x] `GET /api/v1/users/me`
@@ -105,12 +105,13 @@ D1 to D10 were approved on 2026-11-24. See [ARCHITECTURE.md](ARCHITECTURE.md).
 
 **Learn:** data modelling, CRUD, pagination, Swagger.
 
-- [ ] `categories`, `products`, `product_variants`, `product_images`, `inventory`
-- [ ] Public: list, details, search, filter, sort, paginate
-- [ ] Admin: product, category and variant CRUD
-- [ ] Seed script: 12 Nikon and DJI models with placeholder PKR prices (owner replaces them before launch)
-- [ ] Check whether Wikimedia Commons has suitable openly licensed photos, and keep credit and license with each image
-- [ ] Remove public `EXECUTE` from `rls_auto_enable()` (security advisor warning)
+- [x] `categories`, `products`, `product_variants`, `product_images`, `inventory`
+- [x] Public: list, details, search, filter, sort, paginate
+- [x] Admin: product, category and variant CRUD
+- [x] Seed script: 12 Nikon and DJI models with placeholder PKR prices (owner replaces them before launch)
+- [x] Check for openly licensed photos (through Openverse, by title): found for 11 of 12 products, none for the DJI RS 4. Look at each photo and confirm its license at the source before using it
+- [x] Remove public `EXECUTE` from `rls_auto_enable()` (security advisor warning)
+- Swagger hand test: skipped by the owner. Automated tests send real requests to every endpoint group
 
 **Test:** all endpoints through Swagger; drafts stay hidden from the public; invalid input gives 400.
 
@@ -120,7 +121,7 @@ D1 to D10 were approved on 2026-11-24. See [ARCHITECTURE.md](ARCHITECTURE.md).
 
 - [ ] Admin layout and navigation
 - [ ] Category and product CRUD screens, including variants such as body only, lens kit or drone bundle
-- [ ] Image upload to Supabase Storage with type and size checks
+- [ ] Image upload to Supabase Storage with type and size checks, and a credit and license for each photo
 - [ ] Inventory screen with low-stock view and stock-change history
 
 **Test:** create a product with variants and images; a customer cannot reach any admin function.
@@ -201,7 +202,7 @@ D1 to D10 were approved on 2026-11-24. See [ARCHITECTURE.md](ARCHITECTURE.md).
 - [ ] Shipping methods and rates; shipments with tracking numbers
 - [ ] Customer order tracking timeline
 - [ ] In-app notifications and transactional email
-- [ ] Email provider for login emails too: Supabase's built-in email is for testing only
+- [ ] Email provider for login emails too: Supabase's built-in email is for testing only, with a very low limit. Move earlier if it blocks development
 
 **Test:** an admin status change appears in customer tracking and notifications; a failed email does not break an order.
 
@@ -218,6 +219,7 @@ D1 to D10 were approved on 2026-11-24. See [ARCHITECTURE.md](ARCHITECTURE.md).
 - [ ] End-to-end tests for the main journeys
 - [ ] Performance, accessibility and SEO pass, including loading pages separately to reduce the first download
 - [ ] GitHub Actions for lint, test and build
+- [ ] Replace placeholder prices and stock
 - [ ] Separate production Supabase project, backups and monitoring
 - [ ] Deployment and release checklist
 

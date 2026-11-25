@@ -106,7 +106,10 @@ Approved 2026-11-24 (reasons in `docs/ARCHITECTURE.md`):
 - Error: `{ "error": { "code": "...", "message": "...", "details": [] } }` with the correct HTTP status.
 - Throw Nest HTTP exceptions and format them in a global filter. Never leak raw database errors.
 - Check the `error` value of every Supabase call.
-- Get clients only from `SupabaseService`: `forUser(token)` by default, `asSystem()` only for admin and system work.
+- Get clients only from `SupabaseService`: `forUser(token)` by default, `asVisitor()` for public data, `asSystem()` only for admin and system work.
+- Mark admin controllers with `@AdminOnly()`. Return lists as `Page`, which adds `meta`.
+- Turn database errors into 4xx answers with `toHttpError`. Escape user text in ILIKE with `toSearchPatterns` or `escapeLike`.
+- Update DTOs use `PartialType(X, { skipNullProperties: false })`, so `null` cannot skip validation.
 
 ## Frontend conventions
 
@@ -167,6 +170,7 @@ Run inside `backend/` or `frontend/`. Run all checks for an app after changing i
 | Type check | `npm run typecheck` | not applicable |
 | End-to-end tests | `npm run test:e2e` | none yet |
 | Database security tests (real development project) | `npm run test:db` | not applicable |
+| Add the sample products (development only) | `npm run seed` | not applicable |
 | Format | `npm run format` | `npm run format` |
 | Check formatting | `npm run format:check` | `npm run format:check` |
 

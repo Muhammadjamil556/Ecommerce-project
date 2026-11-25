@@ -25,6 +25,7 @@ export class SupabaseService {
   private readonly url: string;
   private readonly publishableKey: string;
   private readonly systemClient: SupabaseClient;
+  private readonly visitorClient: SupabaseClient;
   /** Only verifies tokens. Keeps Supabase's public keys cached between requests. */
   private readonly tokenVerifier: SupabaseClient;
 
@@ -39,6 +40,9 @@ export class SupabaseService {
       { auth: SERVER_AUTH_OPTIONS },
     );
     this.tokenVerifier = createClient(this.url, this.publishableKey, {
+      auth: SERVER_AUTH_OPTIONS,
+    });
+    this.visitorClient = createClient(this.url, this.publishableKey, {
       auth: SERVER_AUTH_OPTIONS,
     });
   }
@@ -85,6 +89,14 @@ export class SupabaseService {
       auth: SERVER_AUTH_OPTIONS,
       global: { headers: { Authorization: `Bearer ${accessToken}` } },
     });
+  }
+
+  /**
+   * For public data. Acts as someone who is not logged in, so Row Level Security
+   * applies. Safe to share, because it holds no user's session.
+   */
+  asVisitor(): SupabaseClient {
+    return this.visitorClient;
   }
 
   /**

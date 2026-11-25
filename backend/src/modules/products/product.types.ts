@@ -47,8 +47,13 @@ export interface ImageRow {
   credit: string;
   license: string;
   source_url: string | null;
+  width: number;
+  height: number;
   sort_order: number;
 }
+
+export const IMAGE_COLUMNS =
+  'id, storage_path, alt_text, credit, license, source_url, width, height, sort_order';
 
 export interface ProductRow {
   id: string;
@@ -66,7 +71,7 @@ export interface ProductRow {
 const PRODUCT_COLUMNS =
   'id, name, slug, brand, description, specifications, status, ' +
   'category:categories (id, name, slug), ' +
-  'images:product_images (id, storage_path, alt_text, credit, license, source_url, sort_order)';
+  `images:product_images (${IMAGE_COLUMNS})`;
 
 export const PUBLIC_PRODUCT_COLUMNS = `${PRODUCT_COLUMNS}, variants:product_variants (${VARIANT_COLUMNS})`;
 

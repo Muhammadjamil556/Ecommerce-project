@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { sessionEnded } from '@/features/auth/authSlice'
 import { createApiThunk } from '@/lib/createApiThunk'
+import { addRequestCases, initialRequest } from '@/lib/requestState'
 import * as api from './api/adminProductsApi'
 
 export const fetchProducts = createApiThunk(
@@ -36,35 +37,26 @@ export const deleteVariant = createApiThunk(
   api.deleteVariant,
 )
 
-// status: 'idle' | 'loading' | 'succeeded' | 'failed'
-const request = { status: 'idle', error: null, requestId: null }
+export const uploadImage = createApiThunk(
+  'adminProducts/uploadImage',
+  api.uploadImage,
+)
+export const updateImage = createApiThunk(
+  'adminProducts/updateImage',
+  api.updateImage,
+)
+export const reorderImages = createApiThunk(
+  'adminProducts/reorderImages',
+  api.reorderImages,
+)
+export const deleteImage = createApiThunk(
+  'adminProducts/deleteImage',
+  api.deleteImage,
+)
+
 const initialState = {
-  list: { items: null, meta: null, ...request },
-  current: { product: null, ...request },
-}
-
-/** Handles loading, success and failure of one part of the state. */
-function addRequestCases(builder, thunk, part, onSuccess) {
-  // Only the newest request counts. After logout there is none.
-  const isCurrent = (state, action) =>
-    action.meta.requestId === state[part].requestId
-
-  builder
-    .addCase(thunk.pending, (state, action) => {
-      state[part].status = 'loading'
-      state[part].error = null
-      state[part].requestId = action.meta.requestId
-    })
-    .addCase(thunk.fulfilled, (state, action) => {
-      if (!isCurrent(state, action)) return
-      state[part].status = 'succeeded'
-      onSuccess(state[part], action.payload)
-    })
-    .addCase(thunk.rejected, (state, action) => {
-      if (!isCurrent(state, action)) return
-      state[part].status = 'failed'
-      state[part].error = action.payload
-    })
+  list: { items: null, meta: null, ...initialRequest },
+  current: { product: null, ...initialRequest },
 }
 
 /** The open product, if this change belongs to it. */
@@ -116,6 +108,29 @@ const adminProductsSlice = createSlice({
           product.variants.map((variant) =>
             variant.id === action.payload.id ? action.payload : variant,
           ),
+        )
+      })
+      .addCase(uploadImage.fulfilled, (state, action) => {
+        openProduct(state, action.meta.arg.productId)?.images.push(
+          action.payload,
+        )
+      })
+      .addCase(updateImage.fulfilled, (state, action) => {
+        const product = openProduct(state, action.meta.arg.productId)
+        if (!product) return
+        product.images = product.images.map((image) =>
+          image.id === action.payload.id ? action.payload : image,
+        )
+      })
+      .addCase(reorderImages.fulfilled, (state, action) => {
+        const product = openProduct(state, action.meta.arg.productId)
+        if (product) product.images = action.payload
+      })
+      .addCase(deleteImage.fulfilled, (state, action) => {
+        const product = openProduct(state, action.meta.arg.productId)
+        if (!product) return
+        product.images = product.images.filter(
+          (image) => image.id !== action.meta.arg.id,
         )
       })
       .addCase(deleteVariant.fulfilled, (state, action) => {

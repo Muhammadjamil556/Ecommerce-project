@@ -38,6 +38,12 @@ export class ProductImageDto extends ProductThumbnailDto {
 
   @ApiProperty({ type: String, nullable: true })
   sourceUrl: string | null;
+
+  @ApiProperty()
+  width: number;
+
+  @ApiProperty()
+  height: number;
 }
 
 class ProductBaseDto {
@@ -110,7 +116,7 @@ export class AdminVariantDto extends VariantDto {
   @ApiProperty()
   sortOrder: number;
 
-  @ApiProperty({ description: 'Changed on the inventory screen (Phase 5)' })
+  @ApiProperty({ description: 'Changed through /admin/inventory' })
   quantity: number;
 
   @ApiProperty()

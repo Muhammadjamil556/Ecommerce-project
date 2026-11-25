@@ -138,6 +138,7 @@ describe('Database security', () => {
     'product_variants',
     'product_images',
     'inventory',
+    'stock_movements',
   ])('blocks every write to %s from the browser', async (table) => {
     const column = table === 'inventory' ? 'variant_id' : 'id';
 
@@ -155,9 +156,64 @@ describe('Database security', () => {
     }
   });
 
-  it('hides exact stock from the browser', async () => {
+  it.each(['inventory', 'stock_movements', 'inventory_overview'])(
+    'hides %s from the browser',
+    async (table) => {
+      for (const client of [createPublicClient(), ann.client]) {
+        const { error } = await client.from(table).select();
+        expect(error?.code).toBe(PERMISSION_DENIED);
+      }
+    },
+  );
+
+  it('does not let the browser change stock or photo order', async () => {
     for (const client of [createPublicClient(), ann.client]) {
-      const { error } = await client.from('inventory').select();
+      const stock = await client.rpc('adjust_stock', {
+        p_variant_id: ann.id,
+        p_change: 1,
+        p_reason: 'received',
+      });
+      const order = await client.rpc('reorder_product_images', {
+        p_product_id: ann.id,
+        p_image_ids: [],
+      });
+      expect(stock.error?.code).toBe(PERMISSION_DENIED);
+      expect(order.error?.code).toBe(PERMISSION_DENIED);
+    }
+  });
+
+  it('does not let the browser upload or list photos', async () => {
+    for (const client of [createPublicClient(), ann.client]) {
+      const bucket = client.storage.from('product-images');
+      const path = `db-test-${randomUUID()}.webp`;
+      const upload = await bucket.upload(path, Buffer.from('x'), {
+        contentType: 'image/webp',
+      });
+      const list = await bucket.list();
+      const buckets = await client.storage.listBuckets();
+
+      expect(upload.error).not.toBeNull();
+      expect(list.data ?? []).toEqual([]);
+      expect(buckets.data ?? []).toEqual([]);
+    }
+  });
+
+  it('does not let the backend change stock without history', async () => {
+    const quantity = await system
+      .from('inventory')
+      .update({ quantity: 1 })
+      .eq('variant_id', ann.id);
+    const insert = await system.from('stock_movements').insert({});
+    const update = await system
+      .from('stock_movements')
+      .update({ change: 1 })
+      .eq('id', ann.id);
+    const remove = await system
+      .from('stock_movements')
+      .delete()
+      .eq('id', ann.id);
+
+    for (const { error } of [quantity, insert, update, remove]) {
       expect(error?.code).toBe(PERMISSION_DENIED);
     }
   });

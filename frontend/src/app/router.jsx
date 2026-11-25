@@ -7,6 +7,8 @@ import { AccountPage } from '@/features/account/pages/AccountPage'
 import { AdminHomePage } from '@/features/admin/pages/AdminHomePage'
 import { AdminCategoriesPage } from '@/features/adminCategories/pages/AdminCategoriesPage'
 import { AdminCategoryPage } from '@/features/adminCategories/pages/AdminCategoryPage'
+import { AdminInventoryItemPage } from '@/features/adminInventory/pages/AdminInventoryItemPage'
+import { AdminInventoryPage } from '@/features/adminInventory/pages/AdminInventoryPage'
 import { AdminNewProductPage } from '@/features/adminProducts/pages/AdminNewProductPage'
 import { AdminProductPage } from '@/features/adminProducts/pages/AdminProductPage'
 import { AdminProductsPage } from '@/features/adminProducts/pages/AdminProductsPage'
@@ -60,6 +62,11 @@ export const router = createBrowserRouter([
                   { path: 'categories', element: <AdminCategoriesPage /> },
                   { path: 'categories/new', element: <AdminCategoryPage /> },
                   { path: 'categories/:id', element: <AdminCategoryPage /> },
+                  { path: 'inventory', element: <AdminInventoryPage /> },
+                  {
+                    path: 'inventory/:variantId',
+                    element: <AdminInventoryItemPage />,
+                  },
                 ],
               },
             ],

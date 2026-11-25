@@ -4,8 +4,8 @@ import { Link, useSearchParams } from 'react-router'
 import { LoadError } from '@/components/common/LoadError'
 import { PageButtons } from '@/components/common/PageButtons'
 import { PageLoader } from '@/components/common/PageLoader'
+import { SearchForm } from '@/components/common/SearchForm'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
 import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select'
 import {
   Table,
@@ -20,6 +20,7 @@ import {
   selectAdminCategories,
 } from '@/features/adminCategories/adminCategoriesSlice'
 import { formatPrice } from '@/lib/money'
+import { changeFilters } from '@/lib/searchParams'
 import { fetchProducts, selectAdminProductList } from '../adminProductsSlice'
 import { StatusBadge } from '../components/StatusBadge'
 import { readProductFilters } from '../productFilters'
@@ -44,18 +45,7 @@ export function AdminProductsPage() {
 
   /** The filters live in the address, so a filtered list can be reloaded or shared. */
   function setFilters(changes) {
-    const next = new URLSearchParams(searchParams)
-    for (const [key, value] of Object.entries({ page: '', ...changes })) {
-      if (value) next.set(key, value)
-      else next.delete(key)
-    }
-    setSearchParams(next)
-  }
-
-  function handleSearch(event) {
-    event.preventDefault()
-    const form = new FormData(event.currentTarget)
-    setFilters({ search: form.get('search').trim() })
+    setSearchParams(changeFilters(searchParams, changes))
   }
 
   return (
@@ -68,25 +58,11 @@ export function AdminProductsPage() {
       </div>
 
       <div className="flex flex-wrap gap-2">
-        <form
-          role="search"
-          onSubmit={handleSearch}
-          className="flex min-w-0 flex-1 gap-2 sm:max-w-sm"
-        >
-          <Input
-            // A new key resets the box when the address changes.
-            key={filters.search}
-            name="search"
-            type="search"
-            aria-label="Search products"
-            placeholder="Search"
-            maxLength={100}
-            defaultValue={filters.search}
-          />
-          <Button type="submit" variant="outline">
-            Search
-          </Button>
-        </form>
+        <SearchForm
+          label="Search products"
+          value={filters.search}
+          onSearch={(search) => setFilters({ search })}
+        />
         <NativeSelect
           aria-label="Status"
           value={filters.status ?? ''}

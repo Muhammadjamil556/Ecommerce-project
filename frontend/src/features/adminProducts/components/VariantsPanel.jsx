@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useDispatch } from 'react-redux'
+import { Link } from 'react-router'
 import { ApiErrorAlert } from '@/components/common/ApiErrorAlert'
 import { ConfirmButton } from '@/components/common/ConfirmButton'
 import { Badge } from '@/components/ui/badge'
@@ -73,7 +74,15 @@ export function VariantsPanel({ product }) {
                 <TableCell className="font-medium">{variant.name}</TableCell>
                 <TableCell>{variant.sku}</TableCell>
                 <TableCell>{formatPrice(variant.priceMinor)}</TableCell>
-                <TableCell>{variant.quantity}</TableCell>
+                <TableCell>
+                  <Link
+                    to={`/admin/inventory/${variant.id}`}
+                    aria-label={`Stock of ${variant.name}: ${variant.quantity}`}
+                    className="underline underline-offset-4"
+                  >
+                    {variant.quantity}
+                  </Link>
+                </TableCell>
                 <TableCell>
                   <Badge variant={variant.isActive ? 'default' : 'secondary'}>
                     {variant.isActive ? 'Active' : 'Hidden'}

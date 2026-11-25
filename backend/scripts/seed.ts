@@ -66,14 +66,26 @@ async function insert(table: string, row: Row): Promise<string> {
   return data.id;
 }
 
-async function update(table: string, column: string, id: string, row: Row) {
+/** Goes through the stock function, so the history is complete. */
+async function addStock(variantId: string, quantity: number) {
+  if (quantity === 0) return;
+  const { error } = await database.rpc('adjust_stock', {
+    p_variant_id: variantId,
+    p_change: quantity,
+    p_reason: 'received',
+    p_note: 'Sample data',
+  });
+  if (error) throw new Error(`Adding stock failed: ${error.message}`);
+}
+
+async function publish(productId: string) {
   const { data, error } = await database
-    .from(table)
-    .update(row)
-    .eq(column, id)
-    .select(column);
-  if (error) throw new Error(`Updating ${table} failed: ${error.message}`);
-  if (data.length !== 1) throw new Error(`Updating ${table} changed no row.`);
+    .from('products')
+    .update({ status: 'published' })
+    .eq('id', productId)
+    .select('id');
+  if (error) throw new Error(`Publishing failed: ${error.message}`);
+  if (data.length !== 1) throw new Error('Publishing changed no row.');
 }
 
 async function seedProduct(
@@ -95,10 +107,10 @@ async function seedProduct(
         product_id: productId,
         sort_order: index,
       });
-      await update('inventory', 'variant_id', variantId, { quantity: stock });
+      await addStock(variantId, stock);
     }
     // Published last, so a failure never leaves a half-finished product on sale.
-    await update('products', 'id', productId, { status: 'published' });
+    await publish(productId);
   } catch (error) {
     // Removes the unfinished draft, so the next run can start over.
     await database.from('products').delete().eq('id', productId);

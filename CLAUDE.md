@@ -80,6 +80,7 @@ Approved 2026-11-24 (reasons in `docs/ARCHITECTURE.md`):
 - D8: one currency, PKR, stored as integer paisa
 - D9: the store sells Nikon and DJI products
 - D10: our database is the product catalog, filled by a seed script. Never scrape Nikon or DJI. Use only images with permission or an open license, and store the credit and license
+- D11 (2026-11-25): `sharp` processes every uploaded photo
 
 ## Security rules
 
@@ -93,6 +94,7 @@ Approved 2026-11-24 (reasons in `docs/ARCHITECTURE.md`):
 - Roles live in `user_roles`, never in user-editable metadata.
 - The auth and roles guards are global. Routes need login by default; `@Public()` opens one and `@Roles('admin')` restricts one. Use `@Public()` only deliberately.
 - Get the user from `@CurrentUser()`. Hiding a button in the UI is not security.
+- Change stock only through `adjust_stock`, so history stays complete. Accept uploads only through `processImage`.
 - When the secret-key client is used, RLS does not apply, so the service must check ownership or role itself.
 
 ## Backend conventions

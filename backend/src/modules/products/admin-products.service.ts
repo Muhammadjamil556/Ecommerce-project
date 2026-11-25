@@ -15,13 +15,10 @@ import {
   AdminProductDetailDto,
   AdminProductSummaryDto,
 } from './dto/product-response.dto.js';
+import { ProductImageStorageService } from './images/product-image-storage.service.js';
 import { ProductSearchService } from './product-search.service.js';
 import { toAdminDetail, toAdminSummary } from './product.mapper.js';
-import {
-  ADMIN_PRODUCT_COLUMNS,
-  AdminProductRow,
-  IMAGE_BUCKET,
-} from './product.types.js';
+import { ADMIN_PRODUCT_COLUMNS, AdminProductRow } from './product.types.js';
 
 const CONFLICTS = {
   duplicate: 'Another product already uses this slug.',
@@ -34,6 +31,7 @@ export class AdminProductsService {
   constructor(
     private readonly supabase: SupabaseService,
     private readonly productSearch: ProductSearchService,
+    private readonly imageStorage: ProductImageStorageService,
   ) {}
 
   async search(
@@ -94,6 +92,9 @@ export class AdminProductsService {
 
   /** Only drafts. Anything customers have seen is archived instead. */
   async remove(id: string): Promise<void> {
+    // Deleting the product also deletes these rows, so read the file paths first.
+    const { images } = await this.getRow(id);
+
     // The status is part of the delete, so it cannot be published in between.
     const { data, error } = await this.table()
       .delete()
@@ -104,11 +105,11 @@ export class AdminProductsService {
 
     if (error) throw toHttpError(error, 'Deleting product');
     if (!data) {
-      await this.getRow(id);
       throw new ConflictException(
         'Only drafts can be deleted. Archive it instead.',
       );
     }
+    await this.imageStorage.remove(images.map((image) => image.storage_path));
   }
 
   private async getRow(id: string): Promise<AdminProductRow> {
@@ -127,8 +128,7 @@ export class AdminProductsService {
   }
 
   private readonly imageUrl = (path: string): string =>
-    this.supabase.asSystem().storage.from(IMAGE_BUCKET).getPublicUrl(path).data
-      .publicUrl;
+    this.imageStorage.publicUrl(path);
 }
 
 function toColumns(dto: UpdateProductDto) {

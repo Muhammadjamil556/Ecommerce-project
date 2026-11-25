@@ -10,6 +10,7 @@ import {
   updateProduct,
 } from '../adminProductsSlice'
 import { CategoriesGate } from '../components/CategoriesGate'
+import { ImagesPanel } from '../components/ImagesPanel'
 import { ProductForm } from '../components/ProductForm'
 import { ProductStatusPanel } from '../components/ProductStatusPanel'
 import { VariantsPanel } from '../components/VariantsPanel'
@@ -49,6 +50,7 @@ export function AdminProductPage() {
         <ProductStatusPanel product={product} />
       </div>
       <VariantsPanel product={product} />
+      <ImagesPanel product={product} />
       <section aria-labelledby="details-heading" className="space-y-4">
         <h2 id="details-heading" className="text-xl font-semibold">
           Details

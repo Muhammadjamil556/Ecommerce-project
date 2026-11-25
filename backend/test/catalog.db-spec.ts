@@ -205,19 +205,16 @@ describe('Catalog API with the real Supabase project', () => {
   });
 
   it('keeps availability in step with stock', async () => {
-    const setStock = async (quantity: number) => {
-      const { error } = await system
-        .from('inventory')
-        .update({ quantity })
-        .eq('variant_id', bodyId);
-      expect(error).toBeNull();
-    };
+    const addStock = (change: number) =>
+      admin('post', `/inventory/${bodyId}/adjustments`)
+        .send({ change, reason: 'correction' })
+        .expect(200);
 
     expect(await find('inStock=true')).toEqual([]);
-    await setStock(2);
+    await addStock(2);
     expect(await find('inStock=true')).toEqual([key]);
     expect(await find('inStock=false')).toEqual([]);
-    await setStock(0);
+    await addStock(-2);
     expect(await find('inStock=false')).toEqual([key]);
   });
 

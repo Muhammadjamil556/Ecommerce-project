@@ -3,12 +3,14 @@ import {
   AdminProductSummaryDto,
   AdminVariantDto,
   ProductDetailDto,
+  ProductImageDto,
   ProductSummaryDto,
 } from './dto/product-response.dto.js';
 import {
   AdminProductRow,
   AdminVariantRow,
   CURRENCY,
+  ImageRow,
   ProductRow,
   SummaryRow,
   VariantRow,
@@ -83,6 +85,19 @@ export function toAdminVariant(row: AdminVariantRow): AdminVariantDto {
   };
 }
 
+export function toImage(row: ImageRow, imageUrl: ImageUrl): ProductImageDto {
+  return {
+    id: row.id,
+    url: imageUrl(row.storage_path),
+    alt: row.alt_text,
+    credit: row.credit,
+    license: row.license,
+    sourceUrl: row.source_url,
+    width: row.width,
+    height: row.height,
+  };
+}
+
 function variantFields(row: VariantRow) {
   return {
     id: row.id,
@@ -104,14 +119,7 @@ function detailFields(row: ProductRow, imageUrl: ImageUrl) {
     category: row.category,
     description: row.description,
     specifications: row.specifications,
-    images: bySortOrder(row.images).map((image) => ({
-      id: image.id,
-      url: imageUrl(image.storage_path),
-      alt: image.alt_text,
-      credit: image.credit,
-      license: image.license,
-      sourceUrl: image.source_url,
-    })),
+    images: bySortOrder(row.images).map((image) => toImage(image, imageUrl)),
   };
 }
 

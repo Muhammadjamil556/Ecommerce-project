@@ -42,6 +42,15 @@ const ADMIN_ROUTES = [
   ['post', `/admin/products/${ID}/variants`],
   ['patch', `/admin/products/${ID}/variants/${ID}`],
   ['delete', `/admin/products/${ID}/variants/${ID}`],
+  ['post', `/admin/products/${ID}/images`],
+  ['put', `/admin/products/${ID}/images/order`],
+  ['patch', `/admin/products/${ID}/images/${ID}`],
+  ['delete', `/admin/products/${ID}/images/${ID}`],
+  ['get', '/admin/inventory'],
+  ['get', `/admin/inventory/${ID}`],
+  ['patch', `/admin/inventory/${ID}`],
+  ['post', `/admin/inventory/${ID}/adjustments`],
+  ['get', `/admin/inventory/${ID}/movements`],
 ] as const;
 
 describe('Catalog rules (e2e)', () => {
@@ -61,7 +70,10 @@ describe('Catalog rules (e2e)', () => {
     await app.close();
   });
 
-  function call(method: 'get' | 'post' | 'patch' | 'delete', path: string) {
+  function call(
+    method: 'get' | 'post' | 'put' | 'patch' | 'delete',
+    path: string,
+  ) {
     return request(app.getHttpServer())[method](`/api/v1${path}`);
   }
 
@@ -96,6 +108,8 @@ describe('Catalog rules (e2e)', () => {
     await call('get', '/products/Not_A_Slug').expect(400);
   });
 
+  const image = { altText: 'A', credit: 'B', license: 'CC0' };
+  const adjustment = { change: 1, reason: 'received' };
   const product = { categoryId: ID, name: 'Z8', brand: 'Nikon' };
   const variant = { sku: 'A-1', name: 'Body', priceMinor: 100 };
 
@@ -117,11 +131,82 @@ describe('Catalog rules (e2e)', () => {
     ['post', '/admin/categories', { name: 'A', sortOrder: -1 }],
     ['post', '/admin/categories', { name: '???' }],
     ['patch', `/admin/categories/${ID}`, { isActive: 'yes' }],
+    ['post', `/admin/products/${ID}/images`, image],
+    ['patch', `/admin/products/${ID}/images/${ID}`, { credit: ' ' }],
+    ['patch', `/admin/products/${ID}/images/${ID}`, { license: null }],
+    ['patch', `/admin/products/${ID}/images/${ID}`, { storagePath: 'x' }],
+    [
+      'patch',
+      `/admin/products/${ID}/images/${ID}`,
+      { sourceUrl: 'javascript:alert(1)' },
+    ],
+    [
+      'patch',
+      `/admin/products/${ID}/images/${ID}`,
+      { sourceUrl: 'http://example.com' },
+    ],
+    ['put', `/admin/products/${ID}/images/order`, { imageIds: [] }],
+    ['put', `/admin/products/${ID}/images/order`, { imageIds: ['x'] }],
+    [
+      'post',
+      `/admin/inventory/${ID}/adjustments`,
+      { ...adjustment, change: 0 },
+    ],
+    [
+      'post',
+      `/admin/inventory/${ID}/adjustments`,
+      { ...adjustment, change: 1.5 },
+    ],
+    [
+      'post',
+      `/admin/inventory/${ID}/adjustments`,
+      { ...adjustment, change: '5' },
+    ],
+    [
+      'post',
+      `/admin/inventory/${ID}/adjustments`,
+      { ...adjustment, change: 100001 },
+    ],
+    [
+      'post',
+      `/admin/inventory/${ID}/adjustments`,
+      { ...adjustment, reason: 'sold' },
+    ],
+    [
+      'post',
+      `/admin/inventory/${ID}/adjustments`,
+      { ...adjustment, note: ' ' },
+    ],
+    [
+      'post',
+      `/admin/inventory/${ID}/adjustments`,
+      { ...adjustment, userId: ID },
+    ],
+    ['patch', `/admin/inventory/${ID}`, { lowStockThreshold: -1 }],
+    ['patch', `/admin/inventory/${ID}`, { quantity: 5 }],
   ] as const)('%s %s rejects %j', async (method, path, body) => {
     role = 'admin';
     await call(method, path)
       .set('Authorization', 'Bearer token')
       .send(body)
+      .expect(400);
+  });
+
+  it('rejects a file that is too large', async () => {
+    role = 'admin';
+    const response = await call('post', `/admin/products/${ID}/images`)
+      .set('Authorization', 'Bearer token')
+      .attach('file', Buffer.alloc(11 * 1024 * 1024), 'photo.jpg')
+      .expect(413);
+    expect(response.body.error.code).toBe('PAYLOAD_TOO_LARGE');
+  });
+
+  it('rejects a second file', async () => {
+    role = 'admin';
+    await call('post', `/admin/products/${ID}/images`)
+      .set('Authorization', 'Bearer token')
+      .attach('file', Buffer.from('a'), 'a.jpg')
+      .attach('file', Buffer.from('b'), 'b.jpg')
       .expect(400);
   });
 });

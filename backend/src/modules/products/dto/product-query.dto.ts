@@ -13,6 +13,7 @@ import {
   Min,
 } from 'class-validator';
 import { PageQueryDto } from '../../../common/pagination/page-query.dto.js';
+import { toBoolean } from '../../../common/utils/to-boolean.js';
 import { trim } from '../../../common/utils/trim.js';
 import { SLUG_MESSAGE, SLUG_PATTERN } from '../../../common/validators/slug.js';
 import { PRODUCT_STATUSES } from '../product.types.js';
@@ -27,13 +28,6 @@ export const PRODUCT_SORTS = [
 export type ProductSort = (typeof PRODUCT_SORTS)[number];
 
 const MAX_PRICE_MINOR = 2_147_483_647;
-
-// Query values arrive as text.
-function toBoolean({ value }: { value: unknown }): unknown {
-  if (value === 'true') return true;
-  if (value === 'false') return false;
-  return value;
-}
 
 export class ProductQueryDto extends PageQueryDto {
   @ApiPropertyOptional({

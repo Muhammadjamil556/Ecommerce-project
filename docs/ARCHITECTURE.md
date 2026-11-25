@@ -16,6 +16,7 @@ How the application is designed and which decisions have been approved. For prog
 | D8 | One currency, Pakistani rupees (PKR), stored as whole paisa | Simple and exact | No other currencies |
 | D9 | The store sells Nikon and DJI cameras and drones | Owner's choice | Variants are options such as body only or lens kit, not only size and color |
 | D10 | The store's own database is the product catalog. A seed script adds about 12 real models; images need permission or an open license | No official Nikon or DJI catalog API was found; the store does not depend on another company | Details, prices and image credits are maintained by us |
+| D11 | `sharp` checks, shrinks and converts uploaded photos (approved 2026-11-25) | Real photos only, smaller files, no hidden data such as GPS | One native dependency in the backend |
 
 ## Request flow
 
@@ -99,7 +100,9 @@ Two database rules must both allow an operation: a **grant** decides whether a r
 | `user_roles` | Nothing | Read own role | Everything |
 | `categories` | Read active | Read active | Everything, except IDs and dates |
 | `products`, `product_variants`, `product_images` | Read if published, in an active category (variants: active) | Same | Everything, except IDs, dates and `is_in_stock` |
-| `inventory` | Nothing | Nothing | Read; change quantity and threshold |
+| `inventory` | Nothing | Nothing | Read; change the threshold. Quantity only through `adjust_stock` |
+| `stock_movements`, `inventory_overview` (view) | Nothing | Nothing | Read |
+| Storage bucket `product-images` | Open a photo by its address; no listing, upload or delete | Same | Everything; WebP only, 5 MB |
 | `product_summaries` (view) | Same rows as above | Same | Read |
 
 A trigger on `auth.users` creates both rows at sign-up. The role is always `customer`, whatever the sign-up request contains.
@@ -108,7 +111,7 @@ A trigger on `auth.users` creates both rows at sign-up. The role is always `cust
 
 ```text
 categories 1---* products 1---* product_variants 1---1 inventory
-                          1---* product_images
+                          1---* product_images        1---* stock_movements (per variant)
 ```
 
 - A **variant** is what a customer buys (body only, lens kit, color). It has the SKU and price. Every product needs at least one to be published.
@@ -118,7 +121,20 @@ categories 1---* products 1---* product_variants 1---1 inventory
 - Search looks for every typed word in the brand, name and description. It suits a small catalog; a larger one would need a search index.
 - The price filter matches when a product's price range overlaps the requested range.
 - The check that a published product keeps an active variant is made before saving. If two admins act at the same moment it could be missed; the product is then hidden, not shown empty.
-- Product photos need a credit and license. Uploading comes in Phase 5.
+
+### Stock
+
+- Every change goes through the `adjust_stock` Postgres function, which updates the quantity and adds a history row, both or neither. Stock cannot go below zero.
+- Changes are added or removed, not overwritten, so simultaneous changes add up.
+- The real work is in `private.adjust_stock` (security definer). `public.adjust_stock` only passes the call on, because the API cannot reach the private schema.
+- History cannot be edited. It is deleted with its variant.
+
+### Photos
+
+- Upload: admin check, 10 MB limit, first bytes must be JPEG, PNG or WebP, then `sharp` decodes it, turns it upright, shrinks it to at most 1600 px and saves WebP without hidden data.
+- Each photo has a description, credit, license and optional source. The first in the order is the main photo.
+- Deleting a photo or draft deletes the database row first, then the file. If the file cannot be deleted, an unused file remains and the server log names it.
+- The bucket is public, so someone with the exact address can open a draft's photo. Addresses contain a random ID.
 
 ## Backend layers
 
@@ -150,7 +166,7 @@ The server refuses to start if an environment variable is missing or invalid. Sw
 | --- | --- |
 | Backend units | Vitest, `*.spec.ts` beside the code |
 | Backend HTTP behaviour | Vitest and Supertest, `test/*.e2e-spec.ts` |
-| Database security | Vitest against the real development project, `test/*.db-spec.ts` |
+| Database security | Vitest against the real development project, `test/*.db-spec.ts` (database, login, catalog, stock, photos) |
 | Frontend logic | Vitest, `*.test.js` beside the code |
 
 There are no automated frontend component tests yet. Screens are checked by hand in a browser.

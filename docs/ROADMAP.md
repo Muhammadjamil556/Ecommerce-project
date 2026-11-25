@@ -1,6 +1,6 @@
 # Development Roadmap
 
-**Current phase:** Phase 5, admin catalog. 5A (layout, categories, products, variants) is built and tested; 5B (photos and inventory) waits for the owner's approval.
+**Current phase:** Phase 5, admin catalog. 5A and 5B are done. Adding photos to the 12 products is in progress.
 
 Status: `[ ]` not started, `[~]` in progress, `[x]` implemented and tested.
 
@@ -32,7 +32,7 @@ The admin catalog comes before the storefront so the storefront shows real produ
 
 ## Open decisions
 
-D1 to D10 were approved on 2026-11-24. See [ARCHITECTURE.md](ARCHITECTURE.md).
+D1 to D10 were approved on 2026-11-24, D11 on 2026-11-25. See [ARCHITECTURE.md](ARCHITECTURE.md).
 
 ### Needed later
 
@@ -121,8 +121,10 @@ D1 to D10 were approved on 2026-11-24. See [ARCHITECTURE.md](ARCHITECTURE.md).
 
 - [x] 5A: Admin layout and navigation
 - [x] 5A: Category and product CRUD screens, including variants such as body only, lens kit or drone bundle
-- [ ] 5B: Image upload to Supabase Storage with type and size checks, and a credit and license for each photo
-- [ ] 5B: Inventory screen with low-stock view and stock-change history
+- [x] 5B: Image upload to Supabase Storage with type and size checks, and a credit and license for each photo
+- [x] 5B: Inventory screen with low-stock view and stock-change history
+- [x] Owner tried photos and inventory
+- [ ] Add photos to the 12 products (open-license candidates; needs the owner's approval)
 
 **Test:** create a product with variants and images; a customer cannot reach any admin function.
 

@@ -42,3 +42,36 @@ export async function updateVariant({ productId, id, changes }) {
 export async function deleteVariant({ productId, id }) {
   await apiClient.delete(`${PATH}/${productId}/variants/${id}`)
 }
+
+// A photo can take a while on a slow connection.
+const UPLOAD_TIMEOUT_MS = 60_000
+
+export async function uploadImage({ productId, file, details }) {
+  const form = new FormData()
+  for (const [key, value] of Object.entries(details)) form.append(key, value)
+  form.append('file', file)
+
+  const response = await apiClient.post(`${PATH}/${productId}/images`, form, {
+    timeout: UPLOAD_TIMEOUT_MS,
+  })
+  return response.data.data
+}
+
+export async function updateImage({ productId, id, changes }) {
+  const response = await apiClient.patch(
+    `${PATH}/${productId}/images/${id}`,
+    changes,
+  )
+  return response.data.data
+}
+
+export async function reorderImages({ productId, imageIds }) {
+  const response = await apiClient.put(`${PATH}/${productId}/images/order`, {
+    imageIds,
+  })
+  return response.data.data
+}
+
+export async function deleteImage({ productId, id }) {
+  await apiClient.delete(`${PATH}/${productId}/images/${id}`)
+}

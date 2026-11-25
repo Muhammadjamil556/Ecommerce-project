@@ -3,14 +3,18 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { sessionEnded } from '@/features/auth/authSlice'
 import adminProductsReducer, {
   createVariant,
+  deleteImage,
   deleteProduct,
   deleteVariant,
   fetchProduct,
   fetchProducts,
+  reorderImages,
   selectAdminProduct,
   selectAdminProductList,
+  updateImage,
   updateProduct,
   updateVariant,
+  uploadImage,
 } from './adminProductsSlice'
 import * as api from './api/adminProductsApi'
 
@@ -20,7 +24,12 @@ vi.mock('@/lib/supabaseClient', () => ({ supabase: {} }))
 vi.mock('./api/adminProductsApi')
 
 const variant = (id, sortOrder) => ({ id, sortOrder })
-const product = { id: 'p1', name: 'Z8', variants: [variant('b', 1)] }
+const product = {
+  id: 'p1',
+  name: 'Z8',
+  variants: [variant('b', 1)],
+  images: [],
+}
 
 describe('adminProductsSlice', () => {
   let store
@@ -94,6 +103,34 @@ describe('adminProductsSlice', () => {
     api.deleteVariant.mockRejectedValue(new Error('offline'))
     await store.dispatch(deleteVariant({ productId: 'p1', id: 'b' }))
     expect(variantIds()).toEqual(['b'])
+  })
+
+  it('adds, edits, reorders and removes photos of the open product', async () => {
+    await open()
+    const images = () => current().product.images
+    const target = { productId: 'p1', id: 'x' }
+
+    api.uploadImage.mockResolvedValueOnce({ id: 'x', alt: 'X' })
+    await store.dispatch(uploadImage({ productId: 'p1' }))
+    api.uploadImage.mockResolvedValueOnce({ id: 'y', alt: 'Y' })
+    await store.dispatch(uploadImage({ productId: 'p1' }))
+    expect(images().map(({ id }) => id)).toEqual(['x', 'y'])
+
+    api.updateImage.mockResolvedValue({ id: 'x', alt: 'New' })
+    await store.dispatch(updateImage(target))
+    expect(images()[0].alt).toBe('New')
+
+    api.reorderImages.mockResolvedValue([{ id: 'y' }, { id: 'x' }])
+    await store.dispatch(reorderImages({ productId: 'p1' }))
+    expect(images().map(({ id }) => id)).toEqual(['y', 'x'])
+
+    api.deleteImage.mockResolvedValue()
+    await store.dispatch(deleteImage(target))
+    expect(images().map(({ id }) => id)).toEqual(['y'])
+
+    api.uploadImage.mockResolvedValueOnce({ id: 'z' })
+    await store.dispatch(uploadImage({ productId: 'other' }))
+    expect(images()).toHaveLength(1)
   })
 
   it('ignores changes to a product that is not open', async () => {
